@@ -20,7 +20,7 @@ def generate_token():
 
 def is_valid_token(token):
     #return token in valid_tokens
-    return token=='cd3d1303-2d62-4f60-8472-3349d34f690c'
+    return token=="Bearer cd3d1303-2d62-4f60-8472-3349d34f690c"
 
 class VistaTokens(Resource):
     def get(self):
@@ -56,7 +56,7 @@ class VistaOffers(Resource):
                 raise CustomPermissionDeniedException("Falta el token de seguridad")
 
             if not is_valid_token(token):
-                raise CustomAuthenticationException("Token no valido")
+                raise CustomAuthenticationException(f"Token no valido: {token}")
             
             if is_valid_token(token):   
                 if new_offer.offer < 0:

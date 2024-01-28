@@ -19,4 +19,4 @@ EXPOSE 3003
 
 LABEL author="f.alarconf@uniandes.edu.co"
 
-CMD ["./wait-for-it.sh", "offer_db:5432", "-t", "100", "--", "flask", "run", "--port=3003", "--host=0.0.0.0"]
+CMD ["./wait-for-it.sh", "offer_db:5432", "-t", "600", "--", "flask", "run", "--port=3003", "--host=0.0.0.0"]
