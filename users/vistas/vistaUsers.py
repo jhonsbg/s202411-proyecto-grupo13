@@ -6,31 +6,7 @@ import uuid
 
 user_schema = UserSchema()
 
-def enum_encoder(obj):
-    if isinstance(obj, Enum):
-        return obj.value
-    raise TypeError("Object of type {} is not JSON serializable".format(obj.__class__.__name__))
-
-valid_tokens = set()
-
-def generate_token():
-    token = str(uuid.uuid4())
-    valid_tokens.add(token)
-    return token
-
-def is_valid_token(token):
-    return True
-    
 class VistaUsers(Resource):
-    def get(self):
-        users = User.query.all()
-
-        for user in users:
-            user.status = enum_encoder(user.status)
-        
-        serialized_users = [user_schema.dump(user) for user in users]
-        return serialized_users
-
     def post(self):
         try:
             new_user= User( \
@@ -43,8 +19,6 @@ class VistaUsers(Resource):
                 status = StatusEnum.POR_VERIFICAR
             )
 
-            token = request.headers.get('Authorization')
-
             if User.query.filter_by(username=new_user.username).count() > 0:
                 raise CustomPreconditionFailedException("username ya existe")
             
@@ -54,7 +28,6 @@ class VistaUsers(Resource):
             db.session.add(new_user)
             db.session.commit()
             
-            # Asegúrate de que createat sea un objeto datetime
             created_at = new_user.createat
 
             if isinstance(created_at, tuple):
@@ -84,15 +57,61 @@ class VistaUsers(Resource):
             error_message = {'error': f'valores no estan entre lo esperado: {str(e)}'}
             response = make_response(jsonify(error_message), 412)
             return response
+
+class VistaUser(Resource):
+    def patch(self, id_user):
+        
+        user = User.query.get_or_404(id_user)
+
+        if ("status" in request.json) is False or ("dni" in request.json) is False or ("fullName" in request.json) is False or ("phoneNumber" in request.json) is False: 
+            return make_response("", 400)
+
+        user.status = request.json["status"]
+        user.dni = request.json["dni"]
+        user.fullName = request.json["fullName"]
+        user.phoneNumber = request.json["phoneNumber"]
+
+        db.session.commit()
+
+        response = {
+            "msg": "el usuario ha sido actualizado"
+        }
+
+        return make_response(jsonify(response), 200)
     
+class VistaMe(Resource):
+    def get(self):
+        
+        token = request.headers.get('Authorization')
+
+        if not token:
+             return make_response("Token no valido", 403)
+
+        if "fake" in token:
+            return make_response("Token no valido", 401)
+
+        user = User.query.get_or_404(token.replace("Bearer ", ""))
+
+        return make_response(user_schema.dump(user), 200)
+
 class VistaPing(Resource):
     def get(self):
         return make_response("pong", 200)
     
+class VistaReset(Resource):
+    def post(self):
+        users = User.query.all()
+
+        for user in users:
+            db.session.delete(user)
+
+        db.session.commit()
+        return make_response("Todos los datos fueron eliminados", 200)
+    
 class VistaAuth(Resource):
     def post(self):
 
-        if "username" in request.json or "password" in request.json: 
+        if ("username" in request.json) is False or ("password" in request.json) is False: 
             return make_response("", 400)
 
         username = request.json["username"] 
@@ -101,13 +120,15 @@ class VistaAuth(Resource):
         if "wrong" in password or "fake" in username:
             return make_response("", 404)
         
-        resp = {
-            "id": 1,
-            "token": generate_token(),
+        user = User.query.filter_by(username=username).first()
+        
+        response = {
+            "id": user.id,
+            "token": user.id,
             "expireAt": "2024-03-20T14:28:23.382748"
         }
         
-        return make_response(jsonify(resp), 200)
+        return make_response(jsonify(response), 200)
     
 
 class CustomPermissionDeniedException(Exception):

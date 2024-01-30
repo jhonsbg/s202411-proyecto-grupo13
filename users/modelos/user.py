@@ -20,7 +20,7 @@ class User(db.Model):
     email = db.Column(db.String(200), nullable=False)
     phoneNumber = db.Column(db.String(12))
     dni = db.Column(db.String(20))
-    fullName = db.Column(db.String(20))
+    fullName = db.Column(db.String(200))
     password = db.Column(db.String(20))
     salt = db.Column(db.String(20))
     token = db.Column(db.String(500))
@@ -41,3 +41,4 @@ class UserSchema(SQLAlchemyAutoSchema):
         load_instance = True
         
     id = fields.String()
+    status = fields.Enum(StatusEnum, by_value=False)
