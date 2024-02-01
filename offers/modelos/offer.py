@@ -36,3 +36,10 @@ class OfferSchema(SQLAlchemyAutoSchema):
         load_instance = True
         
     id = fields.String()
+    postid = fields.String()
+    userid = fields.String()
+    description = fields.String()
+    size = fields.Enum(SizeEnum)
+    fragile = fields.Boolean()
+    offer = fields.Integer()
+    createat = fields.DateTime()

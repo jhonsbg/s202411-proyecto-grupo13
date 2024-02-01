@@ -30,15 +30,41 @@ class VistaTokens(Resource):
     
 class VistaOffers(Resource):
     def get(self):
-        offers = Offer.query.all()
-        # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
-        for offer in offers:
-            offer.size = enum_encoder(offer.size)
+        try:
+            post = request.args.get("post", default="")
+            owner = request.args.get("owner", default="")
+            # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+            if post != "" and owner != "":
+                offers = Offer.query.filter_by(postid=post, userid=owner).all()
+                # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+                for offer in offers:
+                    offer.size = enum_encoder(offer.size)
+                # Serializar las ofertas utilizando Marshmallow
+                serialized_offers = [offer_schema.dump(offer) for offer in offers]
+            else:
+                offers = Offer.query.all()
+                # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+                for offer in offers:
+                    offer.size = enum_encoder(offer.size)
+                # Serializar las ofertas utilizando Marshmallow
+                serialized_offers = [offer_schema.dump(offer) for offer in offers]
+            
+            response = make_response(jsonify(serialized_offers), 200)
+            return response
         
-        # Serializar las ofertas utilizando Marshmallow
-        serialized_offers = [offer_schema.dump(offer) for offer in offers]
-        return serialized_offers
-    
+        except CustomAuthenticationException as e:
+            error_message = 'El token no es válido o está vencido.'
+            response = make_response(jsonify(error_message), 401)
+            return response
+        except CustomPermissionDeniedException as e:
+            error_message = 'No hay token en la solicitud'
+            response = make_response(jsonify(error_message), 403)
+            return response
+        except KeyError  as e:
+            error_message = 'En el caso que alguno de los campos no esté presente en la solicitud, o no tengan el formato esperado.'
+            response = make_response(jsonify(error_message), 400)
+            return response  
+        
     def post(self):
         try:
             new_offer = Offer( \
@@ -51,19 +77,15 @@ class VistaOffers(Resource):
 
             token = request.headers.get('Authorization')
 
-
             if not token:
-                raise CustomPermissionDeniedException("Falta el token de seguridad")
+                raise CustomPermissionDeniedException("")
 
             if not is_valid_token(token):
-                raise CustomAuthenticationException(f"Token no valido: {token}")
+                raise CustomAuthenticationException("")
             
             if is_valid_token(token):   
-                if new_offer.offer < 0:
-                    raise CustomPreconditionFailedException("offer is negative")
-            
-                if new_offer.size not in ["SMALL", "MEDIUM", "LARGE"]:
-                    raise CustomPreconditionFailedException("size is out range")
+                if new_offer.offer < 0 or new_offer.size not in ["SMALL", "MEDIUM", "LARGE"]:
+                    raise CustomPreconditionFailedException("")
             
             db.session.add(new_offer)
             db.session.commit()
@@ -83,19 +105,19 @@ class VistaOffers(Resource):
             response = make_response(jsonify(serialized_new_offer), 201)
             return response
         except KeyError  as e:
-            error_message = {'error': f'Campos incompletos y/o formato no esperado: {str(e)}'}
+            error_message = 'En el caso que alguno de los campos no esté presente en la solicitud, o no tengan el formato esperado.'
             response = make_response(jsonify(error_message), 400)
             return response
         except CustomPermissionDeniedException as e:
-            error_message = {'error': f'Falta el token de seguridad: {str(e)}'}
+            error_message = 'No hay token en la solicitud'
             response = make_response(jsonify(error_message), 403)
             return response
         except CustomAuthenticationException as e:
-            error_message = {'error': f'Token no valido: {str(e)}'}
+            error_message = 'El token no es válido o está vencido.'
             response = make_response(jsonify(error_message), 401)
             return response
         except CustomPreconditionFailedException as e:
-            error_message = {'error': f'valores no estén entre lo esperado, por ejemplo el tamaño del paquete no sea válido, o la oferta sea negativa: {str(e)}'}
+            error_message = 'En el caso que los valores no estén entre lo esperado, por ejemplo el tamaño del paquete no sea válido, o la oferta sea negativa.'
             response = make_response(jsonify(error_message), 412)
             return response
     
@@ -113,6 +135,16 @@ class CustomPreconditionFailedException(Exception):
     def __init__(self, message="values out range or values incorrect"):
         self.message = message
         super().__init__(self.message)
+
+class VistaReset(Resource):
+    def post(self):
+        offers = Offer.query.all()
+
+        for offer in offers:
+            db.session.delete(offer)
+
+        db.session.commit()
+        return make_response("Todos los datos fueron eliminados", 200)
 
 
 

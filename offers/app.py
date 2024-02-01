@@ -4,7 +4,7 @@ from flask_restful import Api
 from os import environ
 
 from modelos import db
-from vistas import VistaOffers, VistaTokens
+from vistas import VistaOffers, VistaTokens, VistaReset
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
@@ -21,4 +21,5 @@ cors = CORS(app)
 
 api = Api(app)
 api.add_resource(VistaOffers, '/offers')
+api.add_resource(VistaReset, '/offers/reset')
 api.add_resource(VistaTokens, '/generar_token')
