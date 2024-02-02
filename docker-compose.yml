@@ -5,7 +5,7 @@ services:
     container_name: api_user
     image: api_user
     restart: always
-    build: .
+    build: ./users/
     ports:
       - "3000:3000"
     volumes:
