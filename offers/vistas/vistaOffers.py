@@ -30,27 +30,151 @@ class VistaTokens(Resource):
     
 class VistaOffers(Resource):
     def get(self):
+        token = "Bearer cd3d1303-2d62-4f60-8472-3349d34f690c"
         try:
-            post = request.args.get("post", default="")
-            owner = request.args.get("owner", default="")
-            # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
-            if post != "" and owner != "":
+            post = request.args.get("post",default="")
+            owner = request.args.get("owner",default="")
+            token_auth = request.headers.get('Authorization')
+
+            if not token_auth:
+                raise CustomPermissionDeniedException("")
+            
+            if not is_valid_token(token_auth):
+                raise CustomAuthenticationException("")
+            
+            if post != "" and owner != "" and owner != "me":
                 offers = Offer.query.filter_by(postid=post, userid=owner).all()
+                serialized_offers = []
                 # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
                 for offer in offers:
                     offer.size = enum_encoder(offer.size)
-                # Serializar las ofertas utilizando Marshmallow
-                serialized_offers = [offer_schema.dump(offer) for offer in offers]
+
+                    serialized_offer = {
+                        "id": str(offer.id),
+                        "postId": offer.postid,
+                        "userId": offer.userid,
+                        "description": offer.description,
+                        "size": offer.size,
+                        "fragile": offer.fragile,
+                        "offer": offer.offer,
+                        "createdAt": offer.createat.isoformat()
+                    }
+                        
+                    serialized_offers.append(serialized_offer)
+
+                response = make_response(jsonify(serialized_offers), 200)
+                return response
+            elif post != "" and owner == "me":
+                offers = Offer.query.filter_by(postid=post, userid=token.replace("Bearer ", "")).all()
+                serialized_offers = []
+                # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+                for offer in offers:
+                    offer.size = enum_encoder(offer.size)
+
+                    serialized_offer = {
+                        "id": str(offer.id),
+                        "postId": offer.postid,
+                        "userId": offer.userid,
+                        "description": offer.description,
+                        "size": offer.size,
+                        "fragile": offer.fragile,
+                        "offer": offer.offer,
+                        "createdAt": offer.createat.isoformat()
+                    }
+                    
+                    serialized_offers.append(serialized_offer)
+
+                response = make_response(jsonify(serialized_offers), 200)
+                return response
+            elif post != "" and owner == "":
+                offers = Offer.query.filter_by(postid=post).all()
+                serialized_offers = []
+                # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+                for offer in offers:
+                    offer.size = enum_encoder(offer.size)
+
+                    serialized_offer = {
+                        "id": str(offer.id),
+                        "postId": offer.postid,
+                        "userId": offer.userid,
+                        "description": offer.description,
+                        "size": offer.size,
+                        "fragile": offer.fragile,
+                        "offer": offer.offer,
+                        "createdAt": offer.createat.isoformat()
+                    }
+                    
+                    serialized_offers.append(serialized_offer)
+
+                response = make_response(jsonify(serialized_offers), 200)
+                return response
+            elif owner == "me" and post == "":
+                serialized_offers = []
+                if isinstance(token, str):
+                    user_id = token.replace("Bearer ", "")
+                    offers = Offer.query.filter_by(userid=user_id).all()
+                    # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+                    for offer in offers:
+                        offer.size = enum_encoder(offer.size)
+
+                        serialized_offer = {
+                            "id": str(offer.id),
+                            "postId": offer.postid,
+                            "userId": offer.userid,
+                            "description": offer.description,
+                            "size": offer.size,
+                            "fragile": offer.fragile,
+                            "offer": offer.offer,
+                            "createdAt": offer.createat.isoformat()
+                        }
+                            
+                        serialized_offers.append(serialized_offer)
+
+                response = make_response(jsonify(serialized_offers), 200)
+                return response
+            elif owner != "" and post == "":
+                offers = Offer.query.filter_by(userid=owner).all()
+                serialized_offers = []
+                # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+                for offer in offers:
+                    offer.size = enum_encoder(offer.size)
+
+                    serialized_offer = {
+                        "id": str(offer.id),
+                        "postId": offer.postid,
+                        "userId": offer.userid,
+                        "description": offer.description,
+                        "size": offer.size,
+                        "fragile": offer.fragile,
+                        "offer": offer.offer,
+                        "createdAt": offer.createat.isoformat()
+                    }
+                        
+                    serialized_offers.append(serialized_offer)
+
+                response = make_response(jsonify(serialized_offers), 200)
+                return response    
             else:
                 offers = Offer.query.all()
-                # Aplicar enum_encoder al campo 'size' en cada oferta antes de serializar
+                serialized_offers = []
                 for offer in offers:
                     offer.size = enum_encoder(offer.size)
-                # Serializar las ofertas utilizando Marshmallow
-                serialized_offers = [offer_schema.dump(offer) for offer in offers]
-            
-            response = make_response(jsonify(serialized_offers), 200)
-            return response
+
+                    serialized_offer = {
+                        "id": str(offer.id),
+                        "postId": offer.postid,
+                        "userId": offer.userid,
+                        "description": offer.description,
+                        "size": offer.size,
+                        "fragile": offer.fragile,
+                        "offer": offer.offer,
+                        "createdAt": offer.createat.isoformat()
+                    }
+                        
+                    serialized_offers.append(serialized_offer)
+
+                response = make_response(jsonify(serialized_offers), 200)
+                return response            
         
         except CustomAuthenticationException as e:
             error_message = 'El token no es válido o está vencido.'
@@ -145,6 +269,56 @@ class VistaReset(Resource):
 
         db.session.commit()
         return make_response("Todos los datos fueron eliminados", 200)
+    
+class VistaOffer(Resource):
+    def get(self, id):
+        token = "Bearer cd3d1303-2d62-4f60-8472-3349d34f690c"
+        
+        try:
+            token_auth = request.headers.get('Authorization')
+
+            if not token_auth:
+                raise CustomPermissionDeniedException("")
+            
+            if not is_valid_token(token_auth):
+                raise CustomAuthenticationException("")
+            
+            offers = Offer.query.filter_by(id=id).all()
+            serialized_offers = []
+            for offer in offers:
+                offer.size = enum_encoder(offer.size)
+
+                serialized_offer = {
+                    "id": str(offer.id),
+                    "postId": offer.postid,
+                    "userId": offer.userid,
+                    "description": offer.description,
+                    "size": offer.size,
+                    "fragile": offer.fragile,
+                    "offer": offer.offer,
+                    "createdAt": offer.createat.isoformat()
+                }
+                    
+                serialized_offers.append(serialized_offer)
+
+            response = make_response(jsonify(serialized_offers), 200)
+            return response
+        except CustomAuthenticationException as e:
+            error_message = 'El token no es válido o está vencido.'
+            response = make_response(jsonify(error_message), 401)
+            return response
+        except CustomPermissionDeniedException as e:
+            error_message = 'No hay token en la solicitud'
+            response = make_response(jsonify(error_message), 403)
+            return response
+        except KeyError  as e:
+            error_message = 'En el caso que alguno de los campos no esté presente en la solicitud, o no tengan el formato esperado.'
+            response = make_response(jsonify(error_message), 400)
+            return response
+    
+class VistaPing(Resource):
+    def get(self):
+        return make_response("Solo para confirmar que el servicio está arriba.", 200)
 
 
 
