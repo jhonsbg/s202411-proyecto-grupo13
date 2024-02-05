@@ -14,16 +14,7 @@ users_blueprint = Blueprint('users', __name__)
 
 @users_blueprint.route('/users', methods = ['POST'])
 def create():
-    new_user = User( \
-        username = request.json["username"], \
-        password = request.json["password"], \
-        email = request.json["email"], \
-        dni = request.json["dni"], \
-        fullName = request.json["fullName"], \
-        phoneNumber = request.json["phoneNumber"], \
-        status = StatusEnum.POR_VERIFICAR
-    )
-    return make_response(jsonify(Create(new_user).execute()), 201)
+    return make_response(jsonify(Create(request.json).execute()), 201)
 
 @users_blueprint.route('/users/<string:id_user>', methods = ['PATCH'])
 def edit(id_user):

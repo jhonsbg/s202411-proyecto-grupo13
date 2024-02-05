@@ -2,22 +2,22 @@ class ApiError(Exception):
     code = 422
     description = "Default message"
     
-class BadRequestException(Exception):
+class BadRequestException(ApiError):
     code = 400
     description = "Permission denied"
 
-class PermissionDeniedException(Exception):
+class PermissionDeniedException(ApiError):
     code = 403
     description = "Permission denied"
 
-class NotFoundException(Exception):
+class NotFoundException(ApiError):
     code = 404
     description = "Data not found"
 
-class AuthenticationException(Exception):
+class AuthenticationException(ApiError):
     code = 401
     description = "Token invalid"
 
-class PreconditionFailedException(Exception):
+class PreconditionFailedException(ApiError):
     code = 412
     description = "values out range or values incorrect"
