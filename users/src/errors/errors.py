@@ -4,7 +4,7 @@ class ApiError(Exception):
     
 class BadRequestException(ApiError):
     code = 400
-    description = "Permission denied"
+    description = "Bad Request"
 
 class PermissionDeniedException(ApiError):
     code = 403

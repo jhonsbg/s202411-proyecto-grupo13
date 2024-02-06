@@ -19,3 +19,5 @@ class Edit(BaseCommannd):
     user.phoneNumber = self.json_data["phoneNumber"]
 
     db.session.commit()
+
+    return True

@@ -10,3 +10,5 @@ class Reset(BaseCommannd):
         db.session.delete(user)
 
     db.session.commit()
+
+    return True
