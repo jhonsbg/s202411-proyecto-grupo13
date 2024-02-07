@@ -1,0 +1,46 @@
+version: "3.8"
+   
+services:
+  api_user:
+    container_name: api_user
+    image: api_user
+    restart: always
+    build: ./users/
+    ports:
+      - "3000:3000"
+    volumes:
+      - /usr/src/app
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=user_db
+      - DB_PORT=5432
+      - DB_NAME=user_db
+    depends_on:
+      - user_db
+    networks:
+      - user_net
+      - app_net
+    links:
+      - user_db
+
+  user_db:
+    container_name: user_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=user_db
+    ports:
+      - "5432:5432"
+    networks:
+      - user_net
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/
+
+networks:
+  user_net:
+    driver: bridge
+  app_net:
+    driver: bridge
