@@ -3,24 +3,19 @@ from sqlalchemy import Column, DateTime, Integer, Integer
 from .model import Model, Base
 
 class Post(Model, Base):
-  __tablename__ = 'users'
+  __tablename__ = 'post'
 
   routeId = Column(Integer)
   userId = Column(Integer)
-  plannedStartDate = Column(DateTime)
-  plannedEndDate = Column(DateTime)
 
-  def __init__(self, routeId, userId, plannedStartDate, plannedEndDate):
+  def __init__(self, routeId, userId):
     Model.__init__(self)
     self.routeId = routeId
     self.userId = userId
-    self.plannedStartDate = plannedStartDate
-    self.plannedEndDate = plannedEndDate
 
 class PostSchema(Schema):
   id = fields.Number()
   routeId = fields.Number()
   userId = fields.Number()
-  plannedStartDate = fields.DateTime()
-  plannedEndDate = fields.DateTime()
+  expireAt = fields.DateTime()
   createdAt = fields.DateTime()
