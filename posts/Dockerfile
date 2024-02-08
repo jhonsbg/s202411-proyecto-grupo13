@@ -14,8 +14,8 @@ COPY Pipfile Pipfile.lock ./
 
 RUN pipenv install
 
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
+# COPY requirements.txt requirements.txt
+# RUN pip3 install -r requirements.txt
 
 COPY . .
 
@@ -25,4 +25,4 @@ EXPOSE 3000
 
 ENTRYPOINT ["/bin/bash", "/app/deploy.sh"]
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
