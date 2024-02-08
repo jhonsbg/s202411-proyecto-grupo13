@@ -1,7 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from marshmallow import fields, Schema
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from modelos import db
+from .models import db
 from sqlalchemy import  Column, DateTime, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import text
