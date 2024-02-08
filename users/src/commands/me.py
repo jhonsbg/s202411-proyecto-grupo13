@@ -1,4 +1,4 @@
-from ..errors.errors import AuthenticationException
+from ..errors.errors import AuthenticationException, PermissionDeniedException
 from .base_command import BaseCommannd
 from ..models import db, User
 
@@ -7,7 +7,14 @@ class Me(BaseCommannd):
     self.token = token
   
   def execute(self):
+    if self.token is None:
+      raise PermissionDeniedException()
+    
     if "fake" in self.token:
       raise AuthenticationException()
 
-    return User.query.get_or_404(self.token.replace("Bearer ", ""))
+    user = User.query.get(self.token.replace("Bearer ", ""))
+
+    if user is None:
+      raise AuthenticationException()
+    return user
