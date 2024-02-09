@@ -4,7 +4,7 @@ from ..models.post import Post, PostSchema
 from ..session import Session
 from ..errors.errors import InvalidParams, PostNotFoundError
 
-class GetPost(BaseCommannd):
+class DeletePost(BaseCommannd):
   def __init__(self, post_id):
     if self.is_uuid(post_id):
       self.post_id = post_id
@@ -13,18 +13,16 @@ class GetPost(BaseCommannd):
 
   def execute(self):
     session = Session()
-    if len(session.query(Post).filter_by(id=self.post_id).all()) <= 0:
+    post = session.query(Post).filter_by(id=self.post_id).first()
+    if post is None:
       session.close()
       raise PostNotFoundError()
 
-    post = session.query(Post).filter_by(id=self.post_id).one()
-    schema = PostSchema()
-    post = schema.dump(post)
+    session.delete(post)
+    session.commit()
 
     session.close()
 
-    return post
-    
   def is_uuid(self, val):
       try:
         uuid.UUID(str(val))

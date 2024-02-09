@@ -1,10 +1,12 @@
 from flask import Flask, jsonify, request, Blueprint
+
 from ..commands.create_post import CreatePost
 from ..commands.get_post import GetPost
 from ..commands.get_posts import GetPosts
 from ..commands.authenticate import Authenticate
 from ..commands.reset import Reset
 from ..commands.create_post_public import CreatePostPublic
+from ..commands.delete_post import DeletePost
 
 posts_blueprint = Blueprint('posts', __name__)
 
@@ -22,9 +24,15 @@ def index():
 
 @posts_blueprint.route('/posts/<id>', methods = ['GET'])
 def show(id):
-    # Authenticate(auth_token()).execute()
+    Authenticate(auth_token()).execute()
     post = GetPost(id).execute()
     return jsonify(post)
+
+@posts_blueprint.route('/posts/<id>', methods = ['DELETE'])
+def delete(id):
+    Authenticate(auth_token()).execute()
+    post = DeletePost(id).execute()
+    return jsonify({"msg": "la publicación fue eliminada"}), 200
 
 @posts_blueprint.route('/posts/ping', methods = ['GET'])
 def ping():
@@ -33,7 +41,7 @@ def ping():
 @posts_blueprint.route('/posts/reset', methods = ['POST'])
 def reset():
     Reset().execute()
-    return jsonify({'status': 'OK'})
+    return jsonify({"msg": "Todos los datos fueron eliminados"}), 200
 
 def auth_token():
     if 'Authorization' in request.headers:

@@ -52,7 +52,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      USERS_PATH: users
+      USERS_PATH: api_user
     depends_on:
       posts_db:
         condition: service_healthy

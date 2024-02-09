@@ -4,15 +4,15 @@ class ApiError(Exception):
 
 class InvalidDates(ApiError):
     code = 412
-    description = "Invalid dates"
+    description = 'La fecha expiración no es válida'
 
 class IncompleteParams(ApiError):
     code = 400
-    description = "Bad request"
+    # description = "Bad request"
 
 class InvalidParams(ApiError):
     code = 400
-    description = "Bad request"
+    # description = "Bad request"
 
 class Unauthorized(ApiError):
     code = 401
@@ -20,11 +20,14 @@ class Unauthorized(ApiError):
 
 class PostNotFoundError(ApiError):
     code = 404
-    description = "Route does not exist"
+    # description = "Route does not exist"
 
 class ExternalError(ApiError):
     code = 422 # Default
     description = "External error"
+
+class NoTokenRequest(ApiError):
+    code = 403
     
 class PostCreateError(ApiError):
     code = 422 # Default
