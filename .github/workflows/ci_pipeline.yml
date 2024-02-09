@@ -4,19 +4,19 @@ on:
     branches: 
       - main
 jobs:
-  test_calculator:
+  test_user:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.10 ]
+        python-version: [ 3.11 ]
     steps:
       - uses: actions/checkout@v1
       - name: Install pipenv
-        working-directory: ./calculator
+        working-directory: ./users
         run: pip install pipenv
       - name: Install dependencies
-        working-directory: ./calculator
+        working-directory: ./users
         run: pipenv install --dev
       - name: Run unit tests
-        working-directory: ./calculator
+        working-directory: ./users
         run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
