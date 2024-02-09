@@ -9,7 +9,7 @@ import os
 
 app = Flask(__name__)
 
-#app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@localhost:5432/route_db"
+# app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@localhost:5432/route_db"
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}:{}/{}".format(os.environ.get('DB_USER'), \
                                                                     os.environ.get('DB_PASSWORD'), \
                                                                     os.environ.get('DB_HOST'), \
@@ -22,9 +22,9 @@ app_context = app.app_context()
 app_context.push()
 
 db.init_app(app)
-app.register_blueprint(routes_blueprint)
-
 db.create_all()
+
+app.register_blueprint(routes_blueprint)
 
 @app.errorhandler(ApiError)
 def handle_exception(err):

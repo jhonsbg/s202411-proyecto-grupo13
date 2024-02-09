@@ -8,7 +8,7 @@ from sqlalchemy.sql import text
 
 class Route(db.Model):
     __tablename__ = "route"
-    id =  db.Column(UUID(as_uuid=True), server_default=text("uuid_generate_v4()"), primary_key=True)
+    id =  db.Column(UUID(as_uuid=True), primary_key=True)
     flightId = db.Column(db.String(120), nullable=False, unique =True)
     sourceAirportCode = db.Column(db.String(3))
     sourceCountry = db.Column(db.String(120))

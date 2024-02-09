@@ -3,9 +3,8 @@ version: "3.8"
 services:
   api_user:
     container_name: api_user
-    image: api_user
     restart: always
-    build: ./users/
+    build: ./users/.
     ports:
       - "3000:3000"
     volumes:
@@ -17,7 +16,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=user_db
     depends_on:
-      - user_db
+      user_db:
+        condition: service_healthy
     networks:
       - user_net
       - app_net
@@ -37,13 +37,17 @@ services:
     networks:
       - user_net
     volumes:
-      - ./pgdata:/var/lib/postgresql/data/
+      - ./pgdata-user:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api_routes:
     container_name: api_route
-    image: api_route
     restart: always
-    build: ./routes/
+    build: ./routes/.
     ports:
       - "3002:3002"
     volumes:
@@ -52,10 +56,11 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_HOST=route_db
-      - DB_PORT=5432
+      - DB_PORT=5433
       - DB_NAME=route_db
     depends_on:
-      - route_db
+      route_db:
+        condition: service_healthy
     networks:
       - route_net
       - app_net
@@ -70,12 +75,17 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=route_db
-    ports:
-      - "5432:5432"
     networks:
       - route_net
+    ports:
+      - "5433:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data/
+      - ./pgdata-route:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 networks:
   user_net:

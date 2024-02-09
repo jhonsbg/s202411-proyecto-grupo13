@@ -1,3 +1,4 @@
+import uuid
 from ..models import db, Route
 from ..errors.errors import *
 from .base_command import BaseCommannd
@@ -12,6 +13,7 @@ class Create(BaseCommannd):
   def execute(self):
     try:
         new_route = Route( \
+        id = str(uuid.uuid4()), \
         flightId = self.json_data["flightId"], \
         sourceAirportCode = self.json_data["sourceAirportCode"], \
         sourceCountry = self.json_data["sourceCountry"], \
