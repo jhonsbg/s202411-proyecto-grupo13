@@ -1,3 +1,4 @@
+import uuid
 from ..errors.errors import PreconditionFailedException, BadRequestException
 from .base_command import BaseCommannd
 from ..models import db, User, StatusEnum
@@ -9,6 +10,7 @@ class Create(BaseCommannd):
   def execute(self):
     try:
       user = User( \
+          id = str(uuid.uuid4()), \
           username = self.json_data["username"], \
           password = self.json_data["password"], \
           email = self.json_data["email"], \
