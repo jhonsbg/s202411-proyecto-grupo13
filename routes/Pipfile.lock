@@ -1,13 +1,13 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "896b40d6ab3bd158efe2fa4027e690bfa344f3030c80b1cc8e1c8ef847687f2a"
+            "sha256": "76cc432138a2d62fd193c8893e8c27a1f36a129167cb6d6e746554623db8267b"
         },
         "pipfile-spec": 6,
         "requires": {},
         "sources": [
             {
-                "name": "users",
+                "name": "routes",
                 "url": "https://pypi.org/simple",
                 "verify_ssl": true
             }
@@ -142,14 +142,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==8.1.7"
         },
-        "colorama": {
-            "hashes": [
-                "sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44",
-                "sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6"
-            ],
-            "markers": "sys_platform == 'win32'",
-            "version": "==0.4.6"
-        },
         "coverage": {
             "extras": [
                 "toml"
@@ -211,20 +203,12 @@
             "markers": "python_version >= '3.8'",
             "version": "==7.4.1"
         },
-        "exceptiongroup": {
-            "hashes": [
-                "sha256:4bfd3996ac73b41e9b9628b04e079f193850720ea5945fc96a08633c66912f14",
-                "sha256:91f5c769735f051a4290d52edd0858999b57e5876e9f85937691bd4c9fa3ed68"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==1.2.0"
-        },
         "flask": {
             "hashes": [
                 "sha256:3232e0e9c850d781933cf0207523d1ece087eb8d87b23777ae38456e2fbe7c6e",
                 "sha256:822c03f4b799204250a7ee84b1eddc40665395333973dfb9deebfe425fefcb7d"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.8'",
             "version": "==3.0.2"
         },
@@ -233,7 +217,7 @@
                 "sha256:4ba4be7f419dc72f4efd8802d69974803c37259dd42f3913b0dcf75c9447e0a0",
                 "sha256:e4b68bb881802dda1a7d878b2fc84c06d1ee57fb40b874d3dc97dabfa36b8312"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.8'",
             "version": "==3.1.1"
         },
@@ -404,7 +388,7 @@
                 "sha256:4c1daff273513dc5eb24b219a8035559dc573c8f322558ef85f5438ddd1236dd",
                 "sha256:c21d4b98fee747c130e6bc8f45c4b3199ea66bc00c12ee1f639f0aeca034d5e9"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.8'",
             "version": "==3.20.2"
         },
@@ -413,7 +397,7 @@
                 "sha256:29ad0a4fd1b4a1e52dcb07f9673d284a6b0795141916cc2169d4ee9a5d007347",
                 "sha256:808c1e95bf72f4491ad2f3498e73116b33074d7dcef79f0e6997d0d37d648ac7"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.8'",
             "version": "==0.30.0"
         },
@@ -508,7 +492,7 @@
                 "sha256:f7fc5a5acafb7d6ccca13bfa8c90f8c51f13d8fb87d95656d3950f0158d3ce53",
                 "sha256:f9b5571d33660d5009a8b3c25dc1db560206e2d2f89d3df1cb32d72c0d117d52"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.7'",
             "version": "==2.9.9"
         },
@@ -517,7 +501,7 @@
                 "sha256:130328f552dcfac0b1cec75c12e3f005619dc5f874f0a06e8ff7263f0ee6225e",
                 "sha256:c99ab0c73aceb050f68929bc93af19ab6db0558791c6a0715723abe9d0ade9d4"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.7'",
             "version": "==7.2.2"
         },
@@ -526,7 +510,7 @@
                 "sha256:2feb1b751d66a8bd934e5edfa2e961d11309dc37b73b0eabe73b5945fee20f6b",
                 "sha256:996b79efde6433cdbd0088872dbc5fb3ed7fe1578b68cdbba634f14bb8dd0470"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.6'",
             "version": "==4.0.0"
         },
@@ -535,7 +519,7 @@
                 "sha256:8c0605ae09a5b7e41c20ebcc44f2c906eea9654095b4b0c342b3814bcc3a8492",
                 "sha256:d7b2f5273ec6d1e221757998bc2f50d2474ed7d0b9331b92556011fadc4e9abf"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.7'",
             "version": "==0.8.1"
         },
@@ -544,7 +528,7 @@
                 "sha256:f4c973eeae0282963eb293eb173ce91b091a79c1334455acfac9ddee8a1c784b",
                 "sha256:fbbdb085ef7c252a326fd8cdcac0aa3b1333d8811f131bdcc701002e1be7ed4f"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.7'",
             "version": "==3.10.0"
         },
@@ -552,7 +536,7 @@
             "hashes": [
                 "sha256:90017d09fbac7bde4b64b2c7e1b5d22da9055b64b821d1a2b4dc805b450b251a"
             ],
-            "index": "users",
+            "index": "routes",
             "version": "==0.2.0"
         },
         "python-dotenv": {
@@ -560,7 +544,7 @@
                 "sha256:e324ee90a023d808f1959c46bcbc04446a10ced277783dc6ee09987c37ec10ca",
                 "sha256:f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.8'",
             "version": "==1.0.1"
         },
@@ -569,7 +553,7 @@
                 "sha256:58cd2187c01e70e6e26505bca751777aa9f2ee0b7f4300988b709f44e013003f",
                 "sha256:942c5a758f98d790eaed1a29cb6eefc7ffb0d1cf7af05c3d2791656dbd6ad1e1"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.7'",
             "version": "==2.31.0"
         },
@@ -625,17 +609,9 @@
                 "sha256:f37c0caf14b9e9b9e8f6dbc81bc56db06acb4363eba5a633167781a48ef036ed",
                 "sha256:f5693145220517b5f42393e07a6898acdfe820e136c98663b971906120549da5"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.7'",
             "version": "==2.0.25"
-        },
-        "tomli": {
-            "hashes": [
-                "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
-                "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
-            ],
-            "markers": "python_version < '3.11'",
-            "version": "==2.0.1"
         },
         "typing-extensions": {
             "hashes": [
@@ -666,7 +642,7 @@
                 "sha256:177f9c9b0d45c47873b619f5b650346d632cdc35fb5e4d25058e09c9e581433d",
                 "sha256:c45be39f7882c9d34243236f2d63cbd58039e360f85d0913425fbd7ceea617a8"
             ],
-            "index": "users",
+            "index": "routes",
             "markers": "python_version >= '3.7'",
             "version": "==0.42.0"
         }
