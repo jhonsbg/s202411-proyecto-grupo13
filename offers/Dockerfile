@@ -6,11 +6,14 @@ WORKDIR /usr/src/offer
 
 COPY . .
 
-RUN pip3 install --upgrade pip
+COPY Pipfile Pipfile.lock ./
 
-RUN pip3 install -r requirements.txt
+RUN python -m pip install --upgrade pip
 
-# Add wait-for-it
+RUN pip install pipenv && pipenv install --dev --system --deploy
+
+ENV FLASK_APP=src.main
+
 COPY wait-for-it.sh wait-for-it.sh
 
 RUN chmod +x wait-for-it.sh
