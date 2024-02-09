@@ -6,16 +6,12 @@ class BadRequestException(ApiError):
     code = 400
     description = "Bad Request"
 
-class PermissionDeniedException(ApiError):
-    code = 403
-    description = "Permission denied"
-
 class NotFoundException(ApiError):
     code = 404    
-    description = "Data not found"
+    description = "El trayecto con ese id no existe"
 
 class AuthenticationException(ApiError):
-    code = 401
+    code = 403
     description = "Token invalid"
 
 class FlightException(ApiError):

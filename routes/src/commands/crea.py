@@ -1,18 +1,13 @@
-from models import db, Route
-from errors.errors import *
+from ..models import db, Route
+from ..errors.errors import *
 from .base_command import BaseCommannd
 from datetime import datetime
+from flask import make_response, jsonify
 
 
 class Create(BaseCommannd):
-  def __init__(self, json_data, token):
+  def __init__(self, json_data):
     self.json_data = json_data
-    self.token = token
-
-  @staticmethod
-  def is_valid_token(token):
-    #return token in valid_tokens
-    return token=="Bearer 39fb8604-7a9f-44b5-88d2-4be1ec9efba2"
   
   def execute(self):
     try:
@@ -28,32 +23,26 @@ class Create(BaseCommannd):
         )
     except: 
         raise BadRequestException()
-    
-       
-    if not self.token:
-      raise PermissionDeniedException()
-    
       
-    
-    if self.is_valid_token(self.token):
-      resultado, mensaje = self.valida_fechas(new_route.plannedStartDate, new_route.plannedEndDate)
-      if resultado:
-          existing_route = Route.query.filter_by(flightId=new_route.flightId).first()
-          if existing_route:
-              raise FlightException()
-          else:
-              db.session.add(new_route)
-              db.session.commit()
-              serialized_new_route = {
-                  "id": new_route.id,
-                  "createdAt": new_route.cupdateAt.isoformat()
-              }
-              return serialized_new_route
-      else:
-        raise DateException()
+    resultado, mensaje = self.valida_fechas(new_route.plannedStartDate, new_route.plannedEndDate)
+    if resultado:
+        existing_route = Route.query.filter_by(flightId=new_route.flightId).first()
+        if existing_route:
+            raise FlightException()
+        else:
+            db.session.add(new_route)
+            db.session.commit()
+            serialized_new_route = {
+                "id": new_route.id,
+                "createdAt": new_route.cupdateAt.isoformat()
+            }
+            return make_response(jsonify(serialized_new_route), 201)
     else:
-       raise AuthenticationException()
-  
+      serialized_new_route = {
+        "msg": 'Las fechas del trayecto no son válidas'
+      } 
+      return make_response(jsonify(serialized_new_route), 412)
+    
   def valida_fechas(self, fecha_inicio, fecha_fin):
     try:
 

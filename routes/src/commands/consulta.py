@@ -1,30 +1,26 @@
-from models import db, Route, RouteSchema
-from errors.errors import *
+from ..models import db, Route, RouteSchema
+from ..errors.errors import *
 from .base_command import BaseCommannd
 import uuid
 
 route_schema = RouteSchema()
 
 class Consulta(BaseCommannd):
-    def __init__(self, id, token):
+    def __init__(self, id):
         self.id = id
-        self.token = token
 
-    def execute(self):    
+    def execute(self):
         try:
-            if not self.token:
-               raise PermissionDeniedException()
-            
-            try:
-                uuid.UUID(self.id)
-            except ValueError:
-                raise BadRequestException()
-            
+            uuid.UUID(self.id)
+        except ValueError:
+            raise BadRequestException()
+        
+        try:
             existing_id = Route.query.get(self.id)
-            if existing_id:    
+            if existing_id:
                 serialized_id = route_schema.dump(existing_id)
                 return serialized_id
             else:
-                raise PermissionDeniedException()
+                raise NotFoundException()
         except: 
-            raise SolicitudException()
+            raise NotFoundException()

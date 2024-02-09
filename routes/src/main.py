@@ -2,9 +2,9 @@ from dotenv import load_dotenv
 loaded = load_dotenv('.env.development')
 
 from flask import Flask, jsonify
-from blueprints.routes import routes_blueprint
-from errors.errors import ApiError
-from models import db
+from .blueprints.routes import routes_blueprint
+from .errors.errors import ApiError
+from .models import db
 import os
 
 app = Flask(__name__)
@@ -22,9 +22,9 @@ app_context = app.app_context()
 app_context.push()
 
 db.init_app(app)
-db.create_all()
-
 app.register_blueprint(routes_blueprint)
+
+db.create_all()
 
 @app.errorhandler(ApiError)
 def handle_exception(err):

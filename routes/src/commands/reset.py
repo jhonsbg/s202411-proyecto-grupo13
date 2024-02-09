@@ -1,4 +1,4 @@
-from models import db, Route
+from ..models import db, Route
 from .base_command import BaseCommannd
 
 class Reset(BaseCommannd):
