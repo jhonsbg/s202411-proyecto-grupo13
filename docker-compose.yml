@@ -1,0 +1,136 @@
+version: "3.8"
+   
+services:
+  api_user:
+    container_name: api_user
+    restart: always
+    build: ./users/.
+    ports:
+      - "3000:3000"
+    volumes:
+      - /usr/src/app
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=user_db
+      - DB_PORT=5432
+      - DB_NAME=user_db
+    depends_on:
+      user_db:
+        condition: service_healthy
+    networks:
+      - user_net
+      - app_net
+    links:
+      - user_db
+
+  user_db:
+    container_name: user_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=user_db
+    ports:
+      - "5432:5432"
+    networks:
+      - user_net
+    volumes:
+      - ./pgdata-user:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api_routes:
+    container_name: api_route
+    restart: always
+    build: ./routes/.
+    ports:
+      - "3002:3002"
+    volumes:
+      - /usr/src/app
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=route_db
+      - DB_PORT=5433
+      - DB_NAME=route_db
+    depends_on:
+      route_db:
+        condition: service_healthy
+    networks:
+      - route_net
+      - app_net
+    links:
+      - route_db
+
+  route_db:
+    container_name: route_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=route_db
+    networks:
+      - route_net
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./pgdata-route:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  api_offer:
+    container_name: api_offer
+    image: api_offer
+    restart: always
+    build: ./offers/
+    ports:
+      - "3003:3003"
+    volumes:
+      - /usr/src/app
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=offer_db
+      - DB_PORT=5432
+      - DB_NAME=offer_db
+    depends_on:
+      - offer_db
+    networks:
+      - offer_net
+      - app_net
+    links:
+      - offer_db
+
+  offer_db:
+    container_name: offer_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=offer_db
+    ports:
+      - "5432:5432"
+    networks:
+      - offer_net
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/
+      - ./create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+
+networks:
+  user_net:
+    driver: bridge
+  app_net:
+    driver: bridge
+  route_net:
+    driver: bridge
+  offer_net:
+    driver: bridge
