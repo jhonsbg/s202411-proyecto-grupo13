@@ -39,8 +39,48 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data/
 
+  api_routes:
+    container_name: api_route
+    image: api_route
+    restart: always
+    build: ./routes/
+    ports:
+      - "3002:3002"
+    volumes:
+      - /usr/src/app
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=route_db
+      - DB_PORT=5432
+      - DB_NAME=route_db
+    depends_on:
+      - route_db
+    networks:
+      - route_net
+      - app_net
+    links:
+      - route_db
+
+  route_db:
+    container_name: route_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=route_db
+    ports:
+      - "5432:5432"
+    networks:
+      - route_net
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data/
+
 networks:
   user_net:
     driver: bridge
   app_net:
+    driver: bridge
+  route_net:
     driver: bridge
