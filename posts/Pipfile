@@ -11,6 +11,7 @@ flask = "*"
 marshmallow = "*"
 python-abc = "*"
 httmock = "*"
+pytz = "*"
 
 [dev-packages]
 pytest = "~=7.2.0"
