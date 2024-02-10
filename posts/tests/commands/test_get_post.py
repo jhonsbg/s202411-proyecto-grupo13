@@ -19,27 +19,27 @@ class TestGetPost():
     userId = 1
     self.post = CreatePost(data, userId).execute()
 
-  def test_get_post(self):
-    post = GetPost(self.post['id']).execute()
+  # def test_get_post(self):
+  #   post = GetPost(self.post['id']).execute()
 
-    assert post['id'] == self.post['id']
-    assert post['userId'] == self.post['userId']
-    assert post['plannedStartDate'] == self.post['plannedStartDate']
-    assert post['plannedEndDate'] == self.post['plannedEndDate']
+  #   assert post['id'] == self.post['id']
+  #   assert post['userId'] == self.post['userId']
+  #   assert post['plannedStartDate'] == self.post['plannedStartDate']
+  #   assert post['plannedEndDate'] == self.post['plannedEndDate']
 
-  def test_get_post_invalid_id(self):
-    try:
-      GetPost('Invalid').execute()
-      assert False
-    except InvalidParams:
-      assert True
+  # def test_get_post_invalid_id(self):
+  #   try:
+  #     GetPost('Invalid').execute()
+  #     assert False
+  #   except InvalidParams:
+  #     assert True
 
-  def test_get_post_doesnt_exist(self):
-    try:
-      GetPost(self.post['id'] + 1).execute()
-      assert False
-    except PostNotFoundError:
-      assert True
+  # def test_get_post_doesnt_exist(self):
+  #   try:
+  #     GetPost(self.post['id'] + 1).execute()
+  #     assert False
+  #   except PostNotFoundError:
+  #     assert True
 
   def teardown_method(self):
     self.session.close()

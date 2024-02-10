@@ -12,17 +12,15 @@ class TestCreatePost():
 
   def test_create_post(self):
     data = {
-      'routeId': 1,
-      'plannedStartDate': datetime.now().date().isoformat(),
-      'plannedEndDate': (datetime.now() + timedelta(days=2)).date().isoformat()
+      'routeId': '1',
+      'expireAt': "2024-02-17T02:21:49.025Z"
     }
-    userId = 1
+    userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
     post = CreatePost(data, userId).execute()
 
-    assert post['routeId'] == data['routeId']
+    assert str(post['routeId']) == data['routeId']
     assert post['userId'] == userId
-    assert 'plannedStartDate' in post
-    assert 'plannedEndDate' in post
+    assert 'createdAt' in post
 
   def test_create_post_missing_fields(self):
     try:
@@ -34,11 +32,10 @@ class TestCreatePost():
   def test_create_post_invalid_dates(self):
     try:
       data = {
-        'routeId': 1,
-        'plannedStartDate': (datetime.now() + timedelta(days=2)).date().isoformat(),
-        'plannedEndDate': datetime.now().date().isoformat()
+        'routeId': '1',
+        'expireAt': "2024-02-08T02:21:49.025Z"
       }
-      userId = 1
+      userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
       CreatePost(data, userId).execute()
       assert False
     except InvalidDates:

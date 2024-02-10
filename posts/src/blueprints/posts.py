@@ -5,7 +5,7 @@ from ..commands.get_post import GetPost
 from ..commands.get_posts import GetPosts
 from ..commands.authenticate import Authenticate
 from ..commands.reset import Reset
-from ..commands.create_post_public import CreatePostPublic
+# from ..commands.create_post_public import CreatePostPublic
 from ..commands.delete_post import DeletePost
 
 posts_blueprint = Blueprint('posts', __name__)
@@ -51,9 +51,9 @@ def auth_token():
     return authorization
 
 
-@posts_blueprint.route('/public/posts', methods = ['POST'])
-def createPublic():
-    auth_info = Authenticate(auth_token()).execute()
-    token = request.headers['Authorization']
-    post = CreatePostPublic(request.get_json(), auth_info['id'],token).execute()
-    return jsonify(post), 201
+# @posts_blueprint.route('/public/posts', methods = ['POST'])
+# def createPublic():
+#     auth_info = Authenticate(auth_token()).execute()
+#     token = request.headers['Authorization']
+#     post = CreatePostPublic(request.get_json(), auth_info['id'],token).execute()
+#     return jsonify(post), 201

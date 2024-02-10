@@ -12,8 +12,9 @@ class Post(Model, Base):
   expireAt = Column(DateTime)
   createdAt = Column(DateTime)
 
-  def __init__(self, routeId, userId, expireAt, createdAt):
+  def __init__(self, id, routeId, userId, expireAt, createdAt):
     Model.__init__(self)
+    self.id = id
     self.routeId = routeId
     self.userId = userId
     self.expireAt = expireAt

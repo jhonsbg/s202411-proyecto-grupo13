@@ -18,12 +18,6 @@ class GetPosts(BaseCommannd):
 
   def execute(self):
 
-    print(self.expire)
-    print(self.routeId)
-    print(self.owner)
-    print(self.userId)
-    print(self.dateNow)
-
     if self.expire not in ('true', 'false', None):
       raise InvalidParams
 
