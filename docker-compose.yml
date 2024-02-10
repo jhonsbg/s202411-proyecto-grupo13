@@ -34,7 +34,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=user_db
     ports:
-      - "5432:5432"
+      - "5434:5432"
     networks:
       - user_net
     volumes:
@@ -50,16 +50,16 @@ services:
   api_routes:
     container_name: api_route
     restart: always
-    build: ./routes/.
+    build: ./routes
     ports:
       - "3002:3000"
-    volumes:
-      - /usr/src/app
+    # volumes:
+    #   - /usr/src/app
     environment:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_HOST=route_db
-      - DB_PORT=5433
+      - DB_PORT=5432
       - DB_NAME=route_db
     depends_on:
       route_db:
@@ -95,7 +95,7 @@ services:
     container_name: api_offer
     image: api_offer
     restart: always
-    build: ./offers/
+    build: ./offers
     ports:
       - "3003:3000"
     volumes:
