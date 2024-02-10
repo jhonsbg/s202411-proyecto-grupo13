@@ -10,9 +10,9 @@ RUN apt-get update && \
     pip install pipenv && \
     pipenv install --system --deploy
 
-COPY wait-for-it.sh wait-for-it.sh
-RUN dos2unix wait-for-it.sh && \
-    chmod +x wait-for-it.sh
+# COPY wait-for-it.sh wait-for-it.sh
+# RUN dos2unix wait-for-it.sh && \
+#     chmod +x wait-for-it.sh
 
 EXPOSE 3000
 LABEL author="h.maury@uniandes.edu.co"

@@ -25,7 +25,10 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+offers/pgdata/
 pgdata/
+pgdata-route/
+pgdata-user
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

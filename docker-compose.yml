@@ -1,6 +1,7 @@
 version: "3.8"
 
 services:
+# --------------------------USERS-------------------------------
   api_user:
     container_name: api_user
     restart: always
@@ -45,12 +46,13 @@ services:
       timeout: 5s
       retries: 5
 
+# --------------------------ROUTES-------------------------------
   api_routes:
     container_name: api_route
     restart: always
     build: ./routes/.
     ports:
-      - "3002:3002"
+      - "3002:3000"
     volumes:
       - /usr/src/app
     environment:
@@ -65,8 +67,8 @@ services:
     networks:
       - route_net
       - app_net
-    links:
-      - route_db
+    # links:
+    #   - route_db
 
   route_db:
     container_name: route_db
@@ -87,13 +89,15 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+# --------------------------OFFERS-------------------------------
   api_offer:
     container_name: api_offer
     image: api_offer
     restart: always
     build: ./offers/
     ports:
-      - "3003:3003"
+      - "3003:3000"
     volumes:
       - /usr/src/app
     environment:
@@ -107,8 +111,8 @@ services:
     networks:
       - offer_net
       - app_net
-    links:
-      - offer_db
+    # links:
+    #   - offer_db
 
   offer_db:
     container_name: offer_db
@@ -126,6 +130,7 @@ services:
       - ./pgdata:/var/lib/postgresql/data/
       - ./create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
 
+# --------------------------POSTS-------------------------------
   posts:
     container_name: api_posts
     image: api_posts
@@ -145,6 +150,7 @@ services:
     networks:
       - app_net
       - posts_net
+  
   posts_db:
     container_name: posts_db
     image: postgres
@@ -160,6 +166,7 @@ services:
     networks:
       - posts_net
 
+# --------------------------NETWORKS-------------------------------
 networks:
   app_net:
     driver: bridge
