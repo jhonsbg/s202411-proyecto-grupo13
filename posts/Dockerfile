@@ -21,8 +21,6 @@ COPY . .
 
 RUN chmod +x /app/deploy.sh && dos2unix /app/deploy.sh
 
-EXPOSE 3000
-
 ENTRYPOINT ["/bin/bash", "/app/deploy.sh"]
 
 # CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

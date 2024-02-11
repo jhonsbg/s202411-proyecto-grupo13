@@ -7,7 +7,7 @@ import uuid
 class Post(Model, Base):
   __tablename__ = 'post'
 
-  routeId = Column(Integer)
+  routeId = Column(UUID(as_uuid=True))
   userId = Column(UUID(as_uuid=True), default=uuid.uuid4)
   expireAt = Column(DateTime)
   createdAt = Column(DateTime)
@@ -22,7 +22,7 @@ class Post(Model, Base):
 
 class PostSchema(Schema):
   id = fields.UUID()
-  routeId = fields.Integer()
+  routeId = fields.UUID()
   userId = fields.UUID()
   expireAt = fields.DateTime()
   createdAt = fields.DateTime()

@@ -1,6 +1,7 @@
+import uuid
 from .base_command import BaseCommand
 from ..models.offer import Offer, db
-from ..errors.errors import PreconditionFailedException, BadRequestException, PermissionDeniedException, AuthenticationException
+from ..errors.errors import PreconditionFailedException, BadRequestException
 from flask import request
 
 class Create(BaseCommand):
@@ -10,25 +11,20 @@ class Create(BaseCommand):
     def execute(self):
         token = request.headers.get('Authorization')
         try:
-            offer = Offer(\
-                    postid = self.json_data["postId"], \
-                    description = self.json_data["description"], \
-                    size = self.json_data["size"], \
-                    fragile = self.json_data["fragile"], \
-                    offer = self.json_data["offer"] \
-                )                
+            offer = Offer( \
+                id = str(uuid.uuid4()), \
+                postid = self.json_data["postId"], \
+                description = self.json_data["description"], \
+                size = self.json_data["size"], \
+                fragile = self.json_data["fragile"], \
+                offer = self.json_data["offer"], \
+                userid = token.replace("Bearer ", "") \
+            )                
         except: 
             raise BadRequestException()
 
-        if not token:
-            raise PermissionDeniedException()
-        
-        if not self.is_valid_token(token):
-                raise AuthenticationException()
-        
-        if self.is_valid_token(token):   
-                if offer.offer < 0 or offer.size not in ["SMALL", "MEDIUM", "LARGE"]:
-                    raise PreconditionFailedException()
+        if offer.offer < 0 or offer.size not in ["SMALL", "MEDIUM", "LARGE"]:
+            raise PreconditionFailedException()
         
         db.session.add(offer)
         db.session.commit()
@@ -45,7 +41,3 @@ class Create(BaseCommand):
         }
 
         return new_offer
-    
-    def is_valid_token(self, token):
-        return token=="Bearer cd3d1303-2d62-4f60-8472-3349d34f690c"
-
