@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from dotenv import load_dotenv
 loaded = load_dotenv('.env.development')
 

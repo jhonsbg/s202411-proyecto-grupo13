@@ -20,9 +20,8 @@ RUN apt-get update && \
 # COPY wait-for-it.sh wait-for-it.sh
 # RUN chmod +x wait-for-it.sh
 
-EXPOSE 3003
 LABEL author="f.alarconf@uniandes.edu.co"
 
 # CMD ["./wait-for-it.sh", "offer_db:5432", "-t", "600", "--", "flask", "run", "--port=3003", "--host=0.0.0.0"]
 
-CMD ["/bin/sh", "-c", "export FLASK_APP=./src/main.py && flask run --port=3003 --host=0.0.0.0"]
+CMD ["/bin/sh", "-c", "export FLASK_APP=./src/main.py && flask run --port=3000 --host=0.0.0.0"]

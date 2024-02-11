@@ -45,15 +45,14 @@ DB_USER=postgres
 DB_PASSWORD=postgres
 DB_HOST=localhost
 DB_PORT=5432
-DB_NAME=offer_db
+DB_NAME=post_db
 USERS_PATH=api_user
 
 Ejecutar el servicio
 
 ```
-
-# Offers
-$> FLASK_APP=./src/main.py flask run -h 0.0.0.0 -p 3003
+# Posts
+$> FLASK_APP=./src/main.py flask run -h 0.0.0.0 -p 3001
 
 ```
 

@@ -15,10 +15,8 @@ class Authenticate(BaseCommannd):
       raise NoTokenRequest()
 
     host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'localhost'
-    port = os.environ['USERS_PORT'] if 'USERS_PORT' in os.environ else 3000
-    base_path = f'http://{host}:{port}'
     response = requests.get(
-      f'{base_path}/users/me',
+      f'http://{host}:3000/users/me',
       headers={
         'Authorization': f'{self.token}'
       }

@@ -31,7 +31,7 @@ class GetPosts(BaseCommannd):
       posts = [post for post in posts if str(post.userId) == str(self.owner)]
 
     if self.routeId != None:
-      posts = [post for post in posts if post.routeId == int(self.routeId)]
+      posts = [post for post in posts if str(post.routeId) == str(self.routeId)]
 
     if self.expire == 'true':
       posts = [post for post in posts if datetime.fromisoformat(str(post.expireAt.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + '+00:00')) < self.dateNow]
