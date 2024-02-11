@@ -53,7 +53,7 @@ services:
       - DB_HOST=route_db
       - DB_PORT=5432
       - DB_NAME=route_db
-      - USERS_PATH=api_user
+      - USERS_PATH=http://localhost:3000
     depends_on:
       route_db:
         condition: service_healthy
@@ -95,7 +95,7 @@ services:
       - DB_HOST=offer_db
       - DB_PORT=5432
       - DB_NAME=offer_db
-      - USERS_PATH=api_user
+      - USERS_PATH=http://localhost:3000
     depends_on:
       offer_db:
         condition: service_healthy
@@ -134,7 +134,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      USERS_PATH: "api_user"
+      USERS_PATH: "http://localhost:3000"
     depends_on:
       posts_db:
         condition: service_healthy
