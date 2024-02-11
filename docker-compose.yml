@@ -48,12 +48,12 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=route_db
-      - DB_PORT=5432
-      - DB_NAME=route_db
-      - USERS_PATH=http://localhost:3000
+      DB_NAME: route_db
+      DB_HOST: route_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      USERS_PATH: "http://localhost:3000"
     depends_on:
       route_db:
         condition: service_healthy
@@ -90,12 +90,12 @@ services:
     volumes:
       - /usr/src/app
     environment:
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=offer_db
-      - DB_PORT=5432
-      - DB_NAME=offer_db
-      - USERS_PATH=http://localhost:3000
+      DB_NAME: offer_db
+      DB_HOST: offer_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      USERS_PATH: "http://localhost:3000"
     depends_on:
       offer_db:
         condition: service_healthy
