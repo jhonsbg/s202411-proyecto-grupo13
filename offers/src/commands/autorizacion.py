@@ -17,5 +17,5 @@ class Autorizacion(BaseCommand):
         # Configurar la cabecera con el token
         headers = {'Authorization': f'Bearer {self.token}'}
 
-        response = requests.get(f'http://{host}:3000/users/me', headers=headers)
+        response = requests.get(f'{host}/users/me', headers=headers)
         return response.status_code

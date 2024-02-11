@@ -16,7 +16,7 @@ class Authenticate(BaseCommannd):
 
     host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'localhost'
     response = requests.get(
-      f'http://{host}:3000/users/me',
+      f'{host}/users/me',
       headers={
         'Authorization': f'{self.token}'
       }
