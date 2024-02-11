@@ -16,7 +16,7 @@ user-management:
   authors:
     - Humberto Maury - h.maury@uniandes.edu.co
 post-management:
-  folder:posts
+  folder: posts
   port: 3001
   authors: 
     - Jhon Bohorquez - js.bohorquezg1@uniandes.edu.co
