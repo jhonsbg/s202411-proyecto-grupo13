@@ -19,4 +19,4 @@ LABEL author="h.maury@uniandes.edu.co"
 # CMD ["./wait-for-it.sh", "user_db:5432", "-t", "600", "--", "FLASK_APP=./src/main.py",  "flask", "run", "--port=3000", "--host=0.0.0.0"]
 # ENTRYPOINT FLASK_APP=./src/main.py pipenv run flask run -h 0.0.0.0 -p 3000
 
-CMD ["/bin/sh", "-c", "export FLASK_APP=./src/main.py && flask run --port=5000 --host=0.0.0.0"]
+CMD ["/bin/sh", "-c", "export FLASK_APP=./src/main.py && flask run --port=3000 --host=0.0.0.0"]

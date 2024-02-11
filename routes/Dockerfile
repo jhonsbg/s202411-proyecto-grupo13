@@ -4,4 +4,4 @@ WORKDIR /app
 COPY . .
 RUN pip install pipenv && pipenv install --deploy
 LABEL author="ma.munozb1@uniandes.edu.co"
-ENTRYPOINT FLASK_APP=./src/main.py pipenv run flask run -h 0.0.0.0 -p 5000
+ENTRYPOINT FLASK_APP=./src/main.py pipenv run flask run -h 0.0.0.0 -p 3002
