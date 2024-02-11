@@ -14,19 +14,19 @@ user-management:
   folder: users
   port: 3000
   authors:
-    - Humberto Maury - h.maury@uniandes.edu.co
+    - h.maury@uniandes.edu.co
 post-management:
   folder: posts
   port: 3001
   authors: 
-    - Jhon Bohorquez - js.bohorquezg1@uniandes.edu.co
+    - js.bohorquezg1@uniandes.edu.co
 offer-management:
   folder: offers
   port: 3003
   authors:
-    - Fredy Alarcon - f.alarconf@uniandes.edu.co
+    - f.alarconf@uniandes.edu.co
 route-management:
   folder: routes
   port: 3002
   authors:
-    - Monica Muñoz - ma.munozb1@uniandes.edu.co
+    - ma.munozb1@uniandes.edu.co
