@@ -1,5 +1,5 @@
 from marshmallow import  Schema, fields
-from sqlalchemy import Column, DateTime, Integer, Integer
+from sqlalchemy import Column, DateTime, Integer, Integer, String
 from .model import Model, Base
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
@@ -7,8 +7,8 @@ import uuid
 class Post(Model, Base):
   __tablename__ = 'post'
 
-  routeId = Column(UUID(as_uuid=True))
-  userId = Column(UUID(as_uuid=True), default=uuid.uuid4)
+  routeId = Column(String(120))
+  userId = Column(String(120), default=str(uuid.uuid4))
   expireAt = Column(DateTime)
   createdAt = Column(DateTime)
 
@@ -21,8 +21,8 @@ class Post(Model, Base):
     self.createdAt = createdAt
 
 class PostSchema(Schema):
-  id = fields.UUID()
-  routeId = fields.UUID()
-  userId = fields.UUID()
+  id = fields.String()
+  routeId = fields.String()
+  userId = fields.String()
   expireAt = fields.DateTime()
   createdAt = fields.DateTime()
