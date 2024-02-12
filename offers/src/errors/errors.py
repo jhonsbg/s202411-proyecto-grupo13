@@ -15,7 +15,7 @@ class NotFoundException(ApiError):
     description = "Data not found"
 
 class AuthenticationException(ApiError):
-    code = 401
+    code = 403
     description = "Token invalid"
 
 class PreconditionFailedException(ApiError):
@@ -32,3 +32,4 @@ class ExternalError(ApiError):
 
 class NoTokenRequest(ApiError):
     code = 403
+    description = "Token invalid"

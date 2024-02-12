@@ -18,40 +18,41 @@ routes_blueprint = Blueprint('routes', __name__)
 def create():
     token = request.headers.get('Authorization') 
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return Create(request.json).execute()
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code)
+    #if  code == 200:
+    return Create(request.json).execute()
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code)
 
 @routes_blueprint.route('/routes', methods = ['GET'])
 def flight():
     token = request.headers.get('Authorization')
     flight_id = request.args.get('flight')
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return make_response(jsonify(VerFligth(flight_id).execute()), 200)
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code)
+    #auth_info = Autorizacion(auth_token()).execute()
+    #if  code == 200:
+    return make_response(jsonify(VerFligth(flight_id).execute()), 200)
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code)
     
 
 @routes_blueprint.route('/routes/<string:id>', methods = ['GET'])
 def consulta(id):
     token = request.headers.get('Authorization') 
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return make_response(jsonify(Consulta(id).execute()), 200)
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code)
+    #if  code == 200:
+    return make_response(jsonify(Consulta(id).execute()), 200)
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code)
 
 
 @routes_blueprint.route('/routes/<string:id>', methods = ['DELETE'])
 def delete(id):
     token = request.headers.get('Authorization')
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return Eliminar(id).execute()
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code) 
+    #if  code == 200:
+    return Eliminar(id).execute()
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code) 
     
 
 
