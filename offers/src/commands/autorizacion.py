@@ -1,5 +1,4 @@
 from .base_command import BaseCommannd
-from ..session import Session
 from ..errors.errors import ExternalError, NoTokenRequest, Unauthorized
 import requests
 from flask import jsonify

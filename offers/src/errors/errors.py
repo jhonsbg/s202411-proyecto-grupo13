@@ -29,3 +29,6 @@ class Unauthorized(ApiError):
 class ExternalError(ApiError):
     code = 422 # Default
     description = "External error"
+
+class NoTokenRequest(ApiError):
+    code = 403
