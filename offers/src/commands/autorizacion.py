@@ -11,7 +11,7 @@ class Autorizacion(BaseCommand):
         if not self.token:
             raise AuthenticationException()
 
-        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'localhost'
+        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://localhost:3000'
         endpoint = '/users/me'
 
         # Configurar la cabecera con el token
