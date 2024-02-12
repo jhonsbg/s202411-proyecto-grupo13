@@ -21,3 +21,11 @@ class AuthenticationException(ApiError):
 class PreconditionFailedException(ApiError):
     code = 412
     description = "values out range or values incorrect"
+
+class Unauthorized(ApiError):
+    code = 401
+    description = "Unauthorized"
+
+class ExternalError(ApiError):
+    code = 422 # Default
+    description = "External error"
