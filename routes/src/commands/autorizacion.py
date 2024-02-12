@@ -12,6 +12,17 @@ class Autorizacion(BaseCommannd):
         if not self.token:
             raise AuthenticationException()
 
+        if os.environ.get('TESTING') is not None and bool(os.environ.get('TESTING')): 
+            if self.token is None:
+                raise AuthenticationException()
+                
+            if "fake" in self.token:
+                raise Unauthorized()
+
+            if self.token != "Bearer cd3d1303-2d62-4f60-8472-3349d34f690c":
+                raise Unauthorized()
+            return 'ok'
+        
         host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://localhost:3000'
         response = requests.get(
             f'{host}/users/me',

@@ -13,7 +13,7 @@ class SizeEnum(enum.Enum):
 
 class Offer(db.Model):
     __tablename__ = "offer"
-    id = db.Column(UUID(as_uuid=True), primary_key=True)
+    id = db.Column(db.String(120), primary_key=True)
     postid = db.Column(db.String(120))
     userid = db.Column(db.String(40))
     description = db.Column(db.String(140), nullable=False)
@@ -34,7 +34,7 @@ class OfferSchema(SQLAlchemyAutoSchema):
         include_fk = True
         load_instance = True
         
-    id = fields.UUID()
+    id = fields.String()
     postid = fields.String()
     userid = fields.String()
     description = fields.String()
