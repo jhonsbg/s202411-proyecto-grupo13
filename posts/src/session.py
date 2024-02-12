@@ -8,7 +8,11 @@ class SessionConfig():
 
   def url(self):
     db_config = self.config()
-    return f'postgresql://{db_config["user"]}:{db_config["password"]}@{db_config["host"]}:{db_config["port"]}/{db_config["db"]}'
+    if os.environ.get('TESTING') is not None and bool(os.environ.get('TESTING')): 
+      basedir = os.path.abspath(os.path.dirname(__file__))
+      return 'sqlite:///' + os.path.join(basedir, 'test_database.db')
+    else:
+      return f'postgresql://{db_config["user"]}:{db_config["password"]}@{db_config["host"]}:{db_config["port"]}/{db_config["db"]}'
 
   def config(self):
     db_name = os.environ['DB_NAME'] if 'DB_NAME' in os.environ else 'monitor_posts'
