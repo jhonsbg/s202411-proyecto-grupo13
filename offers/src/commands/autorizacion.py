@@ -3,7 +3,7 @@ from .base_command import BaseCommand
 import requests
 import os
 
-class Autorizacion(BaseCommannd):
+class Autorizacion(BaseCommand):
     def __init__(self, token):
         self.token = token
 
