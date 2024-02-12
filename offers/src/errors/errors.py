@@ -32,3 +32,4 @@ class ExternalError(ApiError):
 
 class NoTokenRequest(ApiError):
     code = 403
+    description = "Token invalid"
