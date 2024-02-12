@@ -20,8 +20,7 @@ class Autorizacion(BaseCommannd):
 
         response = requests.get(f'{host}/users/me', headers=headers)
         if response.status_code == 200:
-            print(response.status_code)
-            return response.status_code
+            return response.json
         elif response.status_code == 401:
             raise Unauthorized()
         else: 
