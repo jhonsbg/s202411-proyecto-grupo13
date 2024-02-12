@@ -1,29 +1,24 @@
-from .base_command import BaseCommand
-from ..errors.errors import ExternalError, NoTokenRequest, Unauthorized
+from ..models import db, Route, RouteSchema
+from ..errors.errors import *
+from .base_command import BaseCommannd
 import requests
-from flask import jsonify
 import os
 
-class Authenticate(BaseCommand):
-  def __init__(self, token):
-    self.token = token
+route_schema = RouteSchema()
 
-  def execute(self):
+class Autorizacion(BaseCommannd):
+    def __init__(self, token):
+        self.token = token
 
-    if not self.token:
-      raise NoTokenRequest()
+    def execute(self):
+        if not self.token:
+            raise AuthenticationException()
 
-    host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'localhost'
-    response = requests.get(
-      f'{host}/users/me',
-      headers={
-        'Authorization': f'{self.token}'
-      }
-    )
+        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'localhost'
+        endpoint = '/users/me'
 
-    if response.status_code == 200:
-      return response.json()
-    elif response.status_code == 401:
-      raise Unauthorized()
-    else:
-      raise ExternalError(response.status_code)
+        # Configurar la cabecera con el token
+        headers = {'Authorization': f'Bearer {self.token}'}
+
+        response = requests.get(f'{host}/users/me', headers=headers)
+        return response.status_code
