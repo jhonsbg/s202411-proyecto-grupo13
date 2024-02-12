@@ -1,10 +1,8 @@
-from ..models import db, Route, RouteSchema
 from ..errors.errors import *
 from .base_command import BaseCommannd
 import requests
 import os
 
-route_schema = RouteSchema()
 
 class Autorizacion(BaseCommannd):
     def __init__(self, token):
@@ -20,5 +18,10 @@ class Autorizacion(BaseCommannd):
         # Configurar la cabecera con el token
         headers = {'Authorization': f'Bearer {self.token}'}
 
-        response = requests.get(f'http://{host}:3000/users/me', headers=headers)
-        return response.status_code
+        response = requests.get(f'{host}/users/me', headers=headers)
+        if response.status_code == 200:
+            return response.json()
+        elif response.status_code == 401:
+            raise Unauthorized()
+        else: 
+            raise ExternalError(response.status_code)

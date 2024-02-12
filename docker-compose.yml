@@ -36,8 +36,8 @@ services:
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
+      interval: 2s
+      timeout: 2s
       retries: 5
 
 # --------------------------ROUTES-------------------------------
@@ -46,14 +46,14 @@ services:
     restart: always
     build: ./routes
     ports:
-      - "3002:3000"
+      - "3002:3002"
     environment:
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=route_db
-      - DB_PORT=5432
-      - DB_NAME=route_db
-      - USERS_PATH=api_user
+      DB_NAME: route_db
+      DB_HOST: route_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      USERS_PATH: "http://localhost:3000"
     depends_on:
       route_db:
         condition: service_healthy
@@ -75,8 +75,8 @@ services:
       - ./pgdata-route:/var/lib/postgresql/data/
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
+      interval: 2s
+      timeout: 2s
       retries: 5
 
 # --------------------------OFFERS-------------------------------
@@ -86,16 +86,16 @@ services:
     restart: always
     build: ./offers
     ports:
-      - "3003:3000"
+      - "3003:3003"
     volumes:
       - /usr/src/app
     environment:
-      - DB_USER=postgres
-      - DB_PASSWORD=postgres
-      - DB_HOST=offer_db
-      - DB_PORT=5432
-      - DB_NAME=offer_db
-      - USERS_PATH=api_user
+      DB_NAME: offer_db
+      DB_HOST: offer_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      USERS_PATH: "http://localhost:3000"
     depends_on:
       offer_db:
         condition: service_healthy
@@ -117,8 +117,8 @@ services:
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
-      timeout: 5s
+      interval: 2s
+      timeout: 2s
       retries: 5
 
 # --------------------------POSTS-------------------------------
@@ -127,20 +127,20 @@ services:
     image: api_posts
     build: ./posts
     ports:
-      - "3001:3000"
+      - "3001:3001"
     environment:
       DB_NAME: monitor_posts
       DB_HOST: posts_db
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      USERS_PATH: "api_user"
+      USERS_PATH: "http://localhost:3000"
     depends_on:
       posts_db:
         condition: service_healthy
     networks:
       - app_net
-      - posts_net
+      - post_net
   
   posts_db:
     container_name: posts_db
@@ -152,10 +152,10 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
-      timeout: 5s
+      timeout: 2s
       retries: 5
     networks:
-      - posts_net
+      - post_net
     volumes:
       - ./pgdata-post:/var/lib/postgresql/data/
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
@@ -166,7 +166,7 @@ networks:
     driver: bridge
   user_net:
     driver: bridge
-  posts_net:
+  post_net:
     driver: bridge
   route_net:
     driver: bridge

@@ -25,3 +25,11 @@ class DateException(ApiError):
 class SolicitudException(ApiError):
     code = 500
     description = "Error en la solicitud"
+
+class Unauthorized(ApiError):
+    code = 401
+    description = "Unauthorized"
+
+class ExternalError(ApiError):
+    code = 422 # Default
+    description = "External error"
