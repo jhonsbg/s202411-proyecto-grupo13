@@ -15,28 +15,28 @@ offers_blueprint = Blueprint('offers', __name__)
 def create():
     token = request.headers.get('Authorization') 
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return make_response(jsonify(Create(request.json).execute()), 201)
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code)
+    #if  code == 200:
+    return make_response(jsonify(Create(request.json).execute()), 201)
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code)
 
 @offers_blueprint.route('/offers', methods = ['GET'])
 def listOffer():
     token = request.headers.get('Authorization') 
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return ListOffer().execute()
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code)
+    #if  code == 200:
+    return ListOffer().execute()
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code)
 
 @offers_blueprint.route('/offers/<offer_id>', methods = ['GET'])
 def show(offer_id):
     token = request.headers.get('Authorization') 
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return ShowOffer().execute(offer_id)
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code)
+    #if  code == 200:
+    return ShowOffer().execute(offer_id)
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code)
     
 @offers_blueprint.route('/offers/ping', methods = ['GET'])
 def ping():
@@ -46,10 +46,10 @@ def ping():
 def delete(offer_id):
     token = request.headers.get('Authorization') 
     code = Autorizacion(token).execute()
-    if  code == 200:
-        return Delete().execute(offer_id)
-    else:
-        return make_response(jsonify({"error": "Unauthorized"}), code)
+    #if  code == 200:
+    return Delete().execute(offer_id)
+    #else:
+    #    return make_response(jsonify({"error": "Unauthorized"}), code)
 
 @offers_blueprint.route('/offers/reset', methods = ['POST'])
 def reset():
