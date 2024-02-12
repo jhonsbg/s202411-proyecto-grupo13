@@ -28,6 +28,7 @@ def flight():
     token = request.headers.get('Authorization')
     flight_id = request.args.get('flight')
     code = Autorizacion(token).execute()
+    #auth_info = Autorizacion(auth_token()).execute()
     if  code == 200:
         return make_response(jsonify(VerFligth(flight_id).execute()), 200)
     else:

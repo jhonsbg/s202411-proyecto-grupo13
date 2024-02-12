@@ -12,7 +12,7 @@ class Autorizacion(BaseCommannd):
         if not self.token:
             raise AuthenticationException()
 
-        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'localhost'
+        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://localhost:3000'
         endpoint = '/users/me'
 
         # Configurar la cabecera con el token
@@ -20,7 +20,8 @@ class Autorizacion(BaseCommannd):
 
         response = requests.get(f'{host}/users/me', headers=headers)
         if response.status_code == 200:
-            return response.json()
+            print(response.status_code)
+            return response.status_code
         elif response.status_code == 401:
             raise Unauthorized()
         else: 
