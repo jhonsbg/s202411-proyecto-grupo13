@@ -1,10 +1,7 @@
-from ..models import db, Route, RouteSchema
 from ..errors.errors import *
-from .base_command import BaseCommannd
+from .base_command import BaseCommand
 import requests
 import os
-
-route_schema = RouteSchema()
 
 class Autorizacion(BaseCommannd):
     def __init__(self, token):
