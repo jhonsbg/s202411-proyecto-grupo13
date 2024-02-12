@@ -1,10 +1,10 @@
-from .base_command import BaseCommannd
+from .base_command import BaseCommand
 from ..errors.errors import ExternalError, NoTokenRequest, Unauthorized
 import requests
 from flask import jsonify
 import os
 
-class Authenticate(BaseCommannd):
+class Authenticate(BaseCommand):
   def __init__(self, token):
     self.token = token
 
