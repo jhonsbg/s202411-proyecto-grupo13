@@ -14,12 +14,12 @@ if os.environ.get('TESTING') is not None and bool(os.environ.get('TESTING')):
   app.config['SQLALCHEMY_DATABASE_URI'] =\
       'sqlite:///' + os.path.join(basedir, 'test_database.db')
 else:
-  app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@localhost:5432/score_db"
-  #app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}:{}/{}".format(os.environ.get('DB_USER'), \
-  #                                                                    os.environ.get('DB_PASSWORD'), \
-  #                                                                    os.environ.get('DB_HOST'), \
-  #                                                                    os.environ.get('DB_PORT'), \
-  #                                                                    os.environ.get('DB_NAME'))
+  #app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://postgres:postgres@localhost:5432/score_db"
+  app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://{}:{}@{}:{}/{}".format(os.environ.get('DB_USER'), \
+                                                                      os.environ.get('DB_PASSWORD'), \
+                                                                      os.environ.get('DB_HOST'), \
+                                                                      os.environ.get('DB_PORT'), \
+                                                                      os.environ.get('DB_NAME'))
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['PROPAGATE_EXCEPTIONS'] = True
 
