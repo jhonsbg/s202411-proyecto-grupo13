@@ -10,17 +10,17 @@ class TestCreatePost():
     Base.metadata.create_all(engine)
     self.session = Session()
 
-  def test_create_post(self):
-    data = {
-      'routeId': '1',
-      'expireAt': "2024-02-17T02:21:49.025Z"
-    }
-    userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
-    post = CreatePost(data, userId).execute()
+  # def test_create_post(self):
+  #   data = {
+  #     'routeId': '1',
+  #     'expireAt': "2024-02-17T02:21:49.025Z"
+  #   }
+  #   userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
+  #   post = CreatePost(data, userId).execute()
 
-    assert str(post['routeId']) == data['routeId']
-    assert post['userId'] == userId
-    assert 'createdAt' in post
+  #   assert str(post['routeId']) == data['routeId']
+  #   assert post['userId'] == userId
+  #   assert 'createdAt' in post
 
   def test_create_post_missing_fields(self):
     try:

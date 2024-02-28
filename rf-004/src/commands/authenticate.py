@@ -23,7 +23,7 @@ class Authenticate(BaseCommannd):
 
             if self.token != "Bearer 09322959-5bd7-4fdb-b262-ab46dab67c68":
                 raise Unauthorized()
-            return 'ok'
+            return { 'id': 1 }
     
     host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'localhost'
     response = requests.get(
