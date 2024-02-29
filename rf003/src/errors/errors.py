@@ -4,7 +4,11 @@ class ApiError(Exception):
 
 class InvalidDates(ApiError):
     code = 412
-    description = 'La fecha expiración no es válida'
+    description = 'Las fechas del trayecto no son válidas'
+
+class RouteExists(ApiError):
+    code = 412
+    description = 'Ya existe una ruta con el mismo id de vuelo'
 
 class IncompleteParams(ApiError):
     code = 400

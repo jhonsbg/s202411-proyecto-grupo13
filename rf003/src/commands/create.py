@@ -2,7 +2,7 @@ import uuid
 from .base_command import BaseCommand
 from ..models.post import Post, db
 from ..models.route import Route, db
-from ..errors.errors import IncompleteParams
+from ..errors.errors import IncompleteParams, InvalidDates, RouteExists
 from flask import request
 from datetime import datetime
 
@@ -16,6 +16,7 @@ class Create(BaseCommand):
         try:
             planned_start_date = datetime.strptime(self.json_data['plannedStartDate'], '%Y-%m-%dT%H:%M:%S')
             planned_end_date = datetime.strptime(self.json_data['plannedEndDate'], '%Y-%m-%dT%H:%M:%S')
+            expire_at = datetime.strptime(self.json_data['expireAt'], '%Y-%m-%dT%H:%M:%S')
 
             route = Route(\
                 id = str(uuid.uuid4()), \
@@ -31,86 +32,108 @@ class Create(BaseCommand):
 
         except KeyError as e:
             raise IncompleteParams(f"Campo faltante en la solicitud: {e}")
+        
+        if planned_start_date > datetime.now() and expire_at > datetime.now() and expire_at <= planned_start_date:
 
-        route_id = self.validate_route(route.flightId)
-        expire_at = datetime.strptime(self.json_data['expireAt'], '%Y-%m-%dT%H:%M:%S')
+            route_id = self.validate_route(route.flightId)
+            
+            if route_id:
+                old_route = Route.query.filter_by(flightId=route.flightId).first()
+                post = Post(\
+                    id = str(uuid.uuid4()), \
+                    routeId = old_route.id , \
+                    userId = token.replace("Bearer ", ""), \
+                    expireAt = expire_at, \
+                )
 
-        if route_id:
-            old_route = Route.query.filter_by(flightId=route.flightId).first()
-            post = Post(\
-                id = str(uuid.uuid4()), \
-                routeId = old_route.id , \
-                userId = token.replace("Bearer ", ""), \
-                expireAt = expire_at, \
-            )
-            db.session.add(post)
-            db.session.commit()
+                old_route_id = self.validate_route_id(post.routeId)
+                if old_route_id:
+                    raise RouteExists()
+                
+                else:
+                    db.session.add(post)
+                    db.session.commit()
+            else:
+                post = Post(\
+                    id = str(uuid.uuid4()), \
+                    routeId = route.id , \
+                    userId = token.replace("Bearer ", ""), \
+                    expireAt = expire_at, \
+                )
+                old_route_id = self.validate_route_id(post.routeId)
+                if old_route_id:
+                    raise RouteExists()
+                
+                else:
+                    db.session.add(route)
+                    db.session.add(post)
+                    db.session.commit()
+
+            created_at_post = post.createat
+
+            if isinstance(created_at_post, tuple):
+                created_at_post = created_at_post[0]
+
+            expire_at_post = post.expireAt
+
+            if isinstance(expire_at_post, tuple):
+                expire_at_post = expire_at_post[0]
+
+            created_at_route = route.createdAt if route else None
+
+            if created_at_route is not None and not isinstance(created_at_route, datetime):
+                try:
+                    created_at_route = datetime.fromisoformat(created_at_route)
+                except ValueError:
+                    created_at_route = None
+
+            if created_at_route is not None:
+                created_at_route = created_at_route.isoformat()
+
+            if route_id:
+                new_post = {
+                    "data": {
+                        "id": post.id,
+                        "userId": post.userId,
+                        "createdAt": created_at_post.isoformat(),
+                        "expireAt": expire_at_post.isoformat(),
+                        "route": {
+                            "id": old_route.id,
+                            "createdAt": old_route.createdAt.isoformat(),
+                        }
+                    },
+                    "msg": "Resumen de la operación *."
+                }
+            else:
+                new_post = {
+                    "data": {
+                        "id": post.id,
+                        "userId": post.userId,
+                        "createdAt": created_at_post.isoformat(),
+                        "expireAt": expire_at_post.isoformat(),
+                        "route": {
+                            "id": route.id,
+                            "createdAt": created_at_route,
+                        }
+                    },
+                    "msg": "Resumen de la operación *."
+                }
+
+            return new_post
+        
         else:
-            post = Post(\
-                id = str(uuid.uuid4()), \
-                routeId = route.id , \
-                userId = token.replace("Bearer ", ""), \
-                expireAt = expire_at, \
-            )
-            db.session.add(route)
-            db.session.add(post)
-            db.session.commit()
-
-        created_at_post = post.createat
-
-        if isinstance(created_at_post, tuple):
-            created_at_post = created_at_post[0]
-
-        expire_at_post = post.expireAt
-
-        if isinstance(expire_at_post, tuple):
-            expire_at_post = expire_at_post[0]
-
-        created_at_route = route.createdAt if route else None
-
-        if created_at_route is not None and not isinstance(created_at_route, datetime):
-            try:
-                created_at_route = datetime.fromisoformat(created_at_route)
-            except ValueError:
-                created_at_route = None
-
-        if created_at_route is not None:
-            created_at_route = created_at_route.isoformat()
-
-        if route_id:
-            new_post = {
-                "data": {
-                    "id": post.id,
-                    "userId": post.userId,
-                    "createdAt": created_at_post.isoformat(),
-                    "expireAt": expire_at_post.isoformat(),
-                    "route": {
-                        "id": old_route.id,
-                        "createdAt": old_route.createdAt.isoformat(),
-                    }
-                },
-                "msg": "Resumen de la operación *."
-            }
-        else:
-            new_post = {
-                "data": {
-                    "id": post.id,
-                    "userId": post.userId,
-                    "createdAt": created_at_post.isoformat(),
-                    "expireAt": expire_at_post.isoformat(),
-                    "route": {
-                        "id": route.id,
-                        "createdAt": created_at_route,
-                    }
-                },
-                "msg": "Resumen de la operación *."
-            }
-
-        return new_post
+            raise InvalidDates()
     
     def validate_route(self, flightId):
         existing_route = Route.query.filter_by(flightId=flightId).first()
         if existing_route:
             return True
 
+        return False
+    
+    def validate_route_id(self, routeId):
+        existing_post_with_route_id = Post.query.filter_by(routeId=routeId).first()
+        if existing_post_with_route_id:
+            return True
+        
         return False
