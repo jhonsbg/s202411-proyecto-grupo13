@@ -29,6 +29,7 @@ pgdata-offer/
 pgdata-post/
 pgdata-route/
 pgdata-user
+pgdata-rf003/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
