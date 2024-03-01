@@ -1,30 +1,27 @@
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from ..models import db
-from marshmallow import fields
-from sqlalchemy import Column, DateTime, String, func
+from marshmallow import Schema, fields
+from datetime import datetime
 import uuid
 
-class Post(db.Model):
-  __tablename__ = 'post'
-  id = db.Column(db.String(120), primary_key=True)
-  routeId = Column(String(120))
-  userId = Column(String(120))
-  expireAt = Column(DateTime)
-  createat = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), nullable=False)
+class Post:
+    def __init__(self, routeId, userId, expireAt=None, createdAt=None):
+        self.id = str(uuid.uuid4())
+        self.routeId = routeId
+        self.userId = userId
+        self.expireAt = expireAt or datetime.now()
+        self.createdAt = createdAt or datetime.now()
 
-  __mapper_args__ = {
-        "polymorphic_identity": "post",
-    }
+    def serialize(self):
+        return {
+            "id": self.id,
+            "routeId": self.routeId,
+            "userId": self.userId,
+            "expireAt": self.expireAt.isoformat(),
+            "createdAt": self.createdAt.isoformat(),
+        }
 
-class PostSchema(SQLAlchemyAutoSchema):
-  class Meta:
-    model = Post
-    include_relationships = True
-    include_fk = True
-    load_instance = True
-
-  id = fields.String()
-  routeId = fields.String()
-  userId = fields.String()
-  expireAt = fields.DateTime()
-  createdAt = fields.DateTime()
+class PostSchema(Schema):
+    id = fields.String()
+    routeId = fields.String()
+    userId = fields.String()
+    expireAt = fields.DateTime()
+    createdAt = fields.DateTime()

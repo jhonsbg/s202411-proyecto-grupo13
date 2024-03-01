@@ -1,36 +1,38 @@
-from flask_sqlalchemy import SQLAlchemy
-from marshmallow import fields, Schema
-from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from .models import db
-from sqlalchemy import  Column, DateTime, func
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.sql import text
+from marshmallow import Schema, fields
+from datetime import datetime
+import uuid
 
-class Route(db.Model):
-    __tablename__ = "route"
-    id =  db.Column(db.String(120), primary_key=True)
-    flightId = db.Column(db.String(120), nullable=False, unique =True)
-    sourceAirportCode = db.Column(db.String(3))
-    sourceCountry = db.Column(db.String(120))
-    destinyAirportCode = db.Column(db.String(3))
-    destinyCountry = db.Column(db.String(120))
-    bagCost = db.Column(db.Integer, nullable=False)
-    plannedStartDate = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), nullable=False)
-    plannedEndDate = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), nullable=False)
-    createdAt = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), nullable=False)
-    cupdateAt = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), nullable=False)
-    
-    __mapper_args__ = {
-        "polymorphic_identity": "route",
-    }
+class Route:
+    def __init__(self, flightId, sourceAirportCode, sourceCountry, destinyAirportCode, destinyCountry, bagCost,
+                 plannedStartDate=None, plannedEndDate=None, createdAt=None, cupdateAt=None):
+        self.id = str(uuid.uuid4())
+        self.flightId = flightId
+        self.sourceAirportCode = sourceAirportCode
+        self.sourceCountry = sourceCountry
+        self.destinyAirportCode = destinyAirportCode
+        self.destinyCountry = destinyCountry
+        self.bagCost = bagCost
+        self.plannedStartDate = plannedStartDate or datetime.now()
+        self.plannedEndDate = plannedEndDate or datetime.now()
+        self.createdAt = createdAt or datetime.now()
+        self.cupdateAt = cupdateAt or datetime.now()
 
-class RouteSchema(SQLAlchemyAutoSchema):
-    class Meta:
-        model = Route
-        include_relationships = True
-        include_fk = True
-        load_instance = True
-        
+    def serialize(self):
+        return {
+            "id": self.id,
+            "flightId": self.flightId,
+            "sourceAirportCode": self.sourceAirportCode,
+            "sourceCountry": self.sourceCountry,
+            "destinyAirportCode": self.destinyAirportCode,
+            "destinyCountry": self.destinyCountry,
+            "bagCost": self.bagCost,
+            "plannedStartDate": self.plannedStartDate.isoformat(),
+            "plannedEndDate": self.plannedEndDate.isoformat(),
+            "createdAt": self.createdAt.isoformat(),
+            "cupdateAt": self.cupdateAt.isoformat(),
+        }
+
+class RouteSchema(Schema):
     id = fields.String()
     flightId = fields.String()
     sourceAirportCode = fields.String()

@@ -39,3 +39,7 @@ class PostCreateError(ApiError):
 
     def __init__(self, code):
         self.code = code
+
+class Prueba(ApiError):
+    code = 433
+    description = "Prueba"

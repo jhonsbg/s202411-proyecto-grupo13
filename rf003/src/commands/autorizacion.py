@@ -22,7 +22,7 @@ class Autorizacion(BaseCommand):
                 raise Unauthorized()
             return 'ok'
 
-        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://localhost:3000'
+        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://api_user:3000'
         response = requests.get(
             f'{host}/users/me',
             headers={
