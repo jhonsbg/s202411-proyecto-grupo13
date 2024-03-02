@@ -61,8 +61,141 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3007
-      nodePort: 31023
+      nodePort: 31020
+---
 
+###################################
+# RF-003
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rf003
+  labels:
+    app: rf003
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rf003
+  template:
+    metadata:
+      labels:
+        app: rf003
+    spec:
+      containers:
+        - name: rf003
+          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/rf003:1.0
+          ports:
+            - containerPort: 3005
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+          env:
+          - name: USERS_PATH
+            value: "http://servicio-users"
+          - name: POSTS_PATH
+            value: "http://servicio-posts"
+          - name: OFFERS_PATH
+            value: "http://servicio-offers"
+          - name: ROUTES_PATH
+            value: "http://servicio-routes"
+          - name: SCORES_PATH
+            value: "http://servicio-scores"
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: baggage-rf003-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3005
+    type: HTTP
+    requestPath: /rf003/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-rf003
+  annotations:
+    cloud.google.com/backend-config: '{"default": "baggage-rf003-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: rf003
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3007
+      nodePort: 31021
+---
+
+###################################
+# RF-004
+###################################
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rf004
+  labels:
+    app: rf004
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rf004
+  template:
+    metadata:
+      labels:
+        app: rf004
+    spec:
+      containers:
+        - name: rf004
+          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/rf004:1.0
+          ports:
+            - containerPort: 3006
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+          env:
+          - name: USERS_PATH
+            value: "http://servicio-users"
+          - name: POSTS_PATH
+            value: "http://servicio-posts"
+          - name: OFFERS_PATH
+            value: "http://servicio-offers"
+          - name: ROUTES_PATH
+            value: "http://servicio-routes"
+          - name: SCORES_PATH
+            value: "http://servicio-scores"
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: baggage-rf004-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3006
+    type: HTTP
+    requestPath: /rf004/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-rf004
+  annotations:
+    cloud.google.com/backend-config: '{"default": "baggage-rf004-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: rf004
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3007
+      nodePort: 31022
+
+---
 ###################################
 # RF-005
 ###################################

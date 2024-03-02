@@ -42,6 +42,20 @@ spec:
             port: 
               number: 80
       - pathType: Prefix
+        path: /rf003
+        backend:
+          service:
+            name: servicio-rf003
+            port: 
+              number: 80
+      - pathType: Prefix
+        path: /rf004
+        backend:
+          service:
+            name: servicio-rf004
+            port: 
+              number: 80
+      - pathType: Prefix
         path: /rf005
         backend:
           service:
