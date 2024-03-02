@@ -1,7 +1,6 @@
 from ..models import db, Score, ScoreSchema
 from ..errors.errors import *
 from .base_command import BaseCommannd
-import uuid
 
 score_schema = ScoreSchema()
 
@@ -10,13 +9,13 @@ class Consulta(BaseCommannd):
         self.json_data = json_data
 
     def execute(self):
-        required_fields = ["userid", "offerid"]
+        offerIds = []
         
-        for field in required_fields:
-            if not self.json_data.get(field):
-                raise BadRequestException
+        for id in self.json_data:
+            offerIds.append(str(id))
+
         try:
-            existing_score = Score.query.filter_by(userid=self.json_data["userid"], offerid= self.json_data["offerid"]).all()
+            existing_score = Score.query.filter(Score.offerid.in_(offerIds)).all()
             serialized_scores = [score_schema.dump(score) for score in existing_score]
             return serialized_scores 
         except: 
