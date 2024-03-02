@@ -87,7 +87,7 @@ class Posts(BaseCommand):
     response = requests.get(
         f'{host}/posts/{self.post_id}',
         headers={
-        'Authorization': f'{self.token}'
+          'Authorization': f'{self.token}'
         }
     )
 
@@ -109,7 +109,7 @@ class Posts(BaseCommand):
     response = requests.get(
         f'{host}/routes/{route_id}',
         headers={
-        'Authorization': f'{self.token}'
+          'Authorization': f'{self.token}'
         }
     )
 
@@ -131,7 +131,7 @@ class Posts(BaseCommand):
     response = requests.get(
         f'{host}/offers?post={self.post_id}',
         headers={
-        'Authorization': f'{self.token}'
+          'Authorization': f'{self.token}'
         }
     )
 
@@ -151,7 +151,7 @@ class Posts(BaseCommand):
     response = requests.post(
         f'{host}/scores',
         headers={
-        'Authorization': f'{self.token}'
+          'Authorization': f'{self.token}'
         },
         data=offerIds
     )
