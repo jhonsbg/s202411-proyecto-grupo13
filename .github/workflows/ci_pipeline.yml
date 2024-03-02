@@ -21,22 +21,22 @@ jobs:
         working-directory: ./users
         run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
   
-  # test_post:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       python-version: [ 3.10 ]
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - name: Install pipenv
-  #       working-directory: ./posts
-  #       run: pip install pipenv
-  #     - name: Install dependencies
-  #       working-directory: ./posts
-  #       run: pipenv install --dev
-  #     - name: Run unit tests
-  #       working-directory: ./posts
-  #       run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
+  test_post:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.10 ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install pipenv
+        working-directory: ./posts
+        run: pip install pipenv
+      - name: Install dependencies
+        working-directory: ./posts
+        run: pipenv install --dev
+      - name: Run unit tests
+        working-directory: ./posts
+        run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
 
   test_routes:
     runs-on: ubuntu-latest

@@ -39,7 +39,7 @@ class TestPosts():
         response = test_client.post(
           '/posts', json={
             'routeId': '1',
-            'expireAt': "2024-06-17T02:21:49.025Z"
+            'expireAt': "2024-02-17T02:21:49.025Z"
           }
         )
         assert response.status_code == 403
@@ -59,30 +59,31 @@ class TestPosts():
         )
         assert response.status_code == 401
 
-  # def test_create_post_missing_fields(self):
+  def test_create_post_missing_fields(self):
+    with app.test_client() as test_client:
+      with HTTMock(mock_success_auth):
+        response = test_client.post(
+          '/posts', json={},
+          headers={
+            'Authorization': f'Bearer {uuid4()}'
+          }
+        )
+        assert response.status_code == 400
+
+  # def test_create_post_invalid_dates(self):
   #   with app.test_client() as test_client:
   #     with HTTMock(mock_success_auth):
   #       response = test_client.post(
-  #         '/posts', json={},
+  #         '/posts', json={
+  #           'routeId': 1,
+  #           'plannedStartDate': (datetime.now() + timedelta(days=2)).date().isoformat(),
+  #           'plannedEndDate': datetime.now().date().isoformat()
+  #         },
   #         headers={
   #           'Authorization': f'Bearer {uuid4()}'
   #         }
   #       )
-  #       assert response.status_code == 400
-
-  def test_create_post_invalid_dates(self):
-    with app.test_client() as test_client:
-      with HTTMock(mock_success_auth):
-        response = test_client.post(
-          '/posts', json={
-            'routeId': 1,
-            'expireAt': "2023-06-17T02:21:49.025Z"
-          },
-          headers={
-            'Authorization': f'Bearer 09322959-5bd7-4fdb-b262-ab46dab67c68'
-          }
-        )
-        assert response.status_code == 412
+  #       assert response.status_code == 412
 
   # def test_get_post(self):
   #   data = {
@@ -110,20 +111,20 @@ class TestPosts():
   #       assert 'plannedEndDate' in response_json
   #       assert 'createdAt' in response_json
   
-  # def test_get_post_without_token(self):
-  #   data = {
-  #     'routeId': '1',
-  #     'expireAt': "2024-02-17T02:21:49.025Z"
-  #   }
-  #   userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
-  #   post = CreatePost(data, userId).execute()
+  def test_get_post_without_token(self):
+    data = {
+      'routeId': '1',
+      'expireAt': "2024-02-17T02:21:49.025Z"
+    }
+    userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
+    post = CreatePost(data, userId).execute()
 
-  #   with app.test_client() as test_client:
-  #     with HTTMock(mock_failed_auth):
-  #       response = test_client.get(
-  #         f'/posts/{post["id"]}'
-  #       )
-  #       assert response.status_code == 403
+    with app.test_client() as test_client:
+      with HTTMock(mock_failed_auth):
+        response = test_client.get(
+          f'/posts/{post["id"]}'
+        )
+        assert response.status_code == 403
 
   # def test_get_post_invalid_token(self):
   #   data = {
@@ -150,7 +151,7 @@ class TestPosts():
         response = test_client.get(
           f'/posts/invalid',
           headers={
-            'Authorization': f'Bearer 09322959-5bd7-4fdb-b262-ab46dab67c68'
+            'Authorization': f'Bearer {uuid4()}'
           }
         )
         assert response.status_code == 400
@@ -232,25 +233,25 @@ class TestPosts():
   #       assert response.status_code == 200
   #       assert len(response_json) == 0
   
-  # def test_get_posts_without_token(self):
-  #   data = {
-  #     'routeId': '1',
-  #     'expireAt': "2024-02-17T02:21:49.025Z"
-  #   }
-  #   userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
-  #   CreatePost(data, userId).execute()
+  def test_get_posts_without_token(self):
+    data = {
+      'routeId': '1',
+      'expireAt': "2024-02-17T02:21:49.025Z"
+    }
+    userId = '09322959-5bd7-4fdb-b262-ab46dab67c68'
+    CreatePost(data, userId).execute()
 
-  #   with app.test_client() as test_client:
-  #     with HTTMock(mock_failed_auth):
-  #       response = test_client.get(
-  #         f'/posts',
-  #         query_string={
-  #           'when': datetime.now().date().isoformat(),
-  #           'route': data['routeId'],
-  #           'filter': 'me'
-  #         }
-  #       )
-  #       assert response.status_code == 403
+    with app.test_client() as test_client:
+      with HTTMock(mock_failed_auth):
+        response = test_client.get(
+          f'/posts',
+          query_string={
+            'when': datetime.now().date().isoformat(),
+            'route': data['routeId'],
+            'filter': 'me'
+          }
+        )
+        assert response.status_code == 403
 
   # def test_get_posts_invalid_token(self):
   #   data = {
