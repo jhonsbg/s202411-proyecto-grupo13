@@ -41,3 +41,10 @@ spec:
             name: servicio-posts
             port: 
               number: 80
+      - pathType: Prefix
+        path: /rf005
+        backend:
+          service:
+            name: servicio-rf005
+            port: 
+              number: 80
