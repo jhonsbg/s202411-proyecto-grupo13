@@ -1,6 +1,6 @@
+from ..adapters.service_adapter import ServiceAdapter
 from ..errors.errors import *
 from .base_command import BaseCommand
-import requests
 import os
 
 class Auth(BaseCommand):
@@ -10,24 +10,15 @@ class Auth(BaseCommand):
     def execute(self):
         if not self.token:
             raise PermissionDeniedException()
-        
-        if os.environ.get('TESTING') is not None and bool(os.environ.get('TESTING')): 
-            if self.token is None:
-                raise AuthenticationException()
-                
-            if "fake" in self.token:
-                raise BadRequestException()
 
-            if self.token != "Bearer cd3d1303-2d62-4f60-8472-3349d34f690c":
-                raise AuthenticationException()
-            return 'ok'
-
-        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://localhost:3000'
-        response = requests.get(
+        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://api_user:3000'
+        response = ServiceAdapter().resquest(
+            'get',
             f'{host}/users/me',
-            headers={
+            {
             'Authorization': f'{self.token}'
-            }
+            },
+            {}
         )
         
         if response.status_code == 200:
@@ -38,3 +29,4 @@ class Auth(BaseCommand):
             raise NotFoundException()
         else:
             raise ApiError(response.status_code)
+        

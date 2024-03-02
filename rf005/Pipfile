@@ -8,6 +8,7 @@ wheel = "*"
 flask = "*"
 marshmallow = "3.20.2"
 psycopg2-binary = "2.9.9"
+requests = "*"
 
 python-abc = "*"
 python-dotenv = "*"
