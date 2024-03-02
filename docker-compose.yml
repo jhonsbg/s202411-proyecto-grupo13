@@ -53,7 +53,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      USERS_PATH: "http://localhost:3000"
+      USERS_PATH: "http://api_user:3000"
     depends_on:
       route_db:
         condition: service_healthy
@@ -95,7 +95,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      USERS_PATH: "http://localhost:3000"
+      USERS_PATH: "http://api_user:3000"
     depends_on:
       offer_db:
         condition: service_healthy
@@ -114,6 +114,7 @@ services:
     networks:
       - offer_net
     volumes:
+      - ./pgdata-offer:/var/lib/postgresql/data/
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
@@ -123,7 +124,7 @@ services:
 
 # --------------------------POSTS-------------------------------
   posts:
-    container_name: api_posts
+    container_name: api_post
     image: api_posts
     build: ./posts
     ports:
@@ -134,7 +135,7 @@ services:
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
-      USERS_PATH: "http://localhost:3000"
+      USERS_PATH: "http://api_user:3000"
     depends_on:
       posts_db:
         condition: service_healthy
@@ -160,6 +161,57 @@ services:
       - ./pgdata-post:/var/lib/postgresql/data/
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
 
+# --------------------------SCORES-------------------------------
+  api_scores:
+    container_name: api_score
+    restart: always
+    build: ./score
+    ports:
+      - "3004:3004"
+    environment:
+      DB_NAME: score_db
+      DB_HOST: score_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      USERS_PATH: "http://api_user:3000"
+    depends_on:
+      score_db:
+        condition: service_healthy
+    networks:
+      - score_net
+      - app_net
+
+  score_db:
+    container_name: score_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=score_db
+    networks:
+      - score_net
+    volumes:
+      - ./pgdata-score:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
+# --------------------------SCORES-------------------------------
+  api_rf005:
+    container_name: api_rf005
+    restart: always
+    build: ./rf005
+    ports:
+      - "3007:3007"
+    # environment:
+    # USERS_PATH: "http://api_user:3000"
+    networks:
+      - app_net
+
 # --------------------------NETWORKS-------------------------------
 networks:
   app_net:
@@ -171,4 +223,6 @@ networks:
   route_net:
     driver: bridge
   offer_net:
+    driver: bridge
+  score_net:
     driver: bridge
