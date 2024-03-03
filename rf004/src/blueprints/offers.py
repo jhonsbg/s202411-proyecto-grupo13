@@ -11,7 +11,7 @@ offers_blueprint = Blueprint('posts', __name__)
 def create():
     token = request.headers.get('Authorization') 
     user = Autorizacion(token).execute()
-    return make_response(jsonify(Create(request.json, token, user['id']).execute()), 201)
+    return make_response(jsonify(Create(request.json, token, user['id'], id).execute()), 201)
 
 @offers_blueprint.route('/rf004/ping', methods = ['GET'])
 def ping():
