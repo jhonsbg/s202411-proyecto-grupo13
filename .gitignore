@@ -28,8 +28,7 @@ MANIFEST
 pgdata-offer/
 pgdata-post/
 pgdata-route/
-pgdata-user
-pgdata-score
+pgdata-user/
 pgdata-rf003/
 
 # PyInstaller
