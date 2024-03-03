@@ -27,7 +27,7 @@ class Autorizacion(BaseCommannd):
         response = requests.get(
             f'{host}/users/me',
             headers={
-            'Authorization': f'{self.token}'
+                'Authorization': f'{self.token}'
             }
         )
         if response.status_code == 200:

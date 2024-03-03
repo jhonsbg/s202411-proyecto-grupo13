@@ -114,6 +114,7 @@ services:
     networks:
       - offer_net
     volumes:
+      - ./pgdata-offer:/var/lib/postgresql/data/
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
       - ./pgdata-offer:/var/lib/postgresql/data/
     healthcheck:
@@ -124,7 +125,7 @@ services:
 
 # --------------------------POSTS-------------------------------
   posts:
-    container_name: api_posts
+    container_name: api_post
     image: api_posts
     build: ./posts
     ports:
@@ -161,23 +162,78 @@ services:
       - ./pgdata-post:/var/lib/postgresql/data/
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
 
+# --------------------------SCORES-------------------------------
+  api_scores:
+    container_name: api_score
+    restart: always
+    build: ./score
+    ports:
+      - "3004:3004"
+    environment:
+      DB_NAME: score_db
+      DB_HOST: score_db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      USERS_PATH: "http://api_user:3000"
+    depends_on:
+      score_db:
+        condition: service_healthy
+    networks:
+      - score_net
+      - app_net
+
+  score_db:
+    container_name: score_db
+    image: postgres:latest
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=score_db
+    networks:
+      - score_net
+    volumes:
+      - ./pgdata-score:/var/lib/postgresql/data/
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+
 # -------------------------- RF-003 -------------------------------
-  # api_rf003:
-  #   container_name: api_rf003
-  #   image: api_rf003
-  #   build: ./rf003
-  #   ports:
-  #     - "3004:3004"
-  #   environment:
-  #     USERS_PATH: "http://api_user:3000"
-  #   depends_on:
-  #     posts_db:
-  #       condition: service_healthy
-  #     route_db:
-  #       condition: service_healthy
+  api_rf003:
+    container_name: api_rf003
+    image: api_rf003
+    build: ./rf003
+    ports:
+      - "3005:3005"
+    environment:
+      USERS_PATH: "http://api_user:3000"
+    depends_on:
+      posts_db:
+        condition: service_healthy
+      route_db:
+        condition: service_healthy
       
-  #   networks:
-  #     - app_net
+    networks:
+      - app_net
+
+# --------------------------RF-005-------------------------------
+  api_rf005:
+    container_name: api_rf005
+    restart: always
+    build: ./rf005
+    ports:
+      - "3007:3007"
+    environment:
+      USERS_PATH: "http://api_user:3000"
+      POSTS_PATH: "http://api_post:3001"
+      ROUTES_PATH: "http://api_route:3002"
+      OFFERS_PATH: "http://api_offer:3003"
+      SCORES_PATH: "http://api_score:3004"
+    networks:
+      - app_net
 
 # --------------------------NETWORKS-------------------------------
 networks:
@@ -191,5 +247,5 @@ networks:
     driver: bridge
   offer_net:
     driver: bridge
-  rf003_net:
+  score_net:
     driver: bridge
