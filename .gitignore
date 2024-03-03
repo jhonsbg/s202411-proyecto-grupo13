@@ -29,6 +29,7 @@ pgdata-offer/
 pgdata-post/
 pgdata-route/
 pgdata-user
+pgdata-score
 pgdata-rf003/
 
 # PyInstaller
