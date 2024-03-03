@@ -116,7 +116,6 @@ services:
     volumes:
       - ./pgdata-offer:/var/lib/postgresql/data/
       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-      - ./pgdata-offer:/var/lib/postgresql/data/
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
@@ -219,7 +218,21 @@ services:
         condition: service_healthy
       route_db:
         condition: service_healthy
-      
+    networks:
+      - app_net
+
+# --------------------------RF-004-------------------------------
+  api_rf004:
+    container_name: api_rf004
+    restart: always
+    build: ./rf004
+    ports:
+      - "3006:3006"
+    environment:
+      USERS_PATH: "http://api_user:3000"
+      POSTS_PATH: "http://api_post:3001"
+      OFFERS_PATH: "http://api_offer:3003"
+      SCORES_PATH: "http://api_score:3004"
     networks:
       - app_net
 

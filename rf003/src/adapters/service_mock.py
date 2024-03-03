@@ -10,10 +10,7 @@ class ServiceMock():
                 
             if "fake" in headers["Authorization"]:
                 raise Unauthorized()
-
             
-            print(headers["Authorization"])
-
             if headers["Authorization"] != "Bearer cd3d1303-2d62-4f60-8472-3349d34f690c":
                 raise Unauthorized()
             return MockResponse(200, self.getUserResponse)

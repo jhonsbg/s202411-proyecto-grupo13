@@ -9,7 +9,6 @@ class Autorizacion(BaseCommand):
         self.token = token
 
     def execute(self):
-        print(self.token)
         if not self.token:
             raise NoTokenRequest()
  
