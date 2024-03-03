@@ -10,9 +10,6 @@ posts_blueprint = Blueprint('posts', __name__)
 @posts_blueprint.route('/rf003/posts', methods = ['POST'])
 def create():
     token = request.headers.get('Authorization') 
-    code = Autorizacion(token).execute()
-    #if  code == 200:
-    return make_response(jsonify(Create(request.json).execute()), 201)
-    #else:
-    #    return make_response(jsonify({"error": "Unauthorized"}), code)
+    user = Autorizacion(token).execute()
+    return make_response(jsonify(Create(request.json, token, user['id']).execute()), 201)
 

@@ -1,5 +1,5 @@
 from marshmallow import Schema, fields
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 class Route:
@@ -12,8 +12,15 @@ class Route:
         self.destinyAirportCode = destinyAirportCode
         self.destinyCountry = destinyCountry
         self.bagCost = bagCost
-        self.plannedStartDate = plannedStartDate or datetime.now()
-        self.plannedEndDate = plannedEndDate or datetime.now()
+
+        # Asegurar que plannedStartDate sea un objeto datetime
+        if plannedStartDate is None or not isinstance(plannedStartDate, datetime):
+            plannedStartDate = datetime.now()
+        if plannedEndDate is None or not isinstance(plannedEndDate, datetime):
+            plannedEndDate = datetime.now()
+
+        self.plannedStartDate = plannedStartDate
+        self.plannedEndDate = plannedEndDate
         self.createdAt = createdAt or datetime.now()
         self.cupdateAt = cupdateAt or datetime.now()
 
@@ -26,11 +33,16 @@ class Route:
             "destinyAirportCode": self.destinyAirportCode,
             "destinyCountry": self.destinyCountry,
             "bagCost": self.bagCost,
-            "plannedStartDate": self.plannedStartDate.isoformat(),
-            "plannedEndDate": self.plannedEndDate.isoformat(),
-            "createdAt": self.createdAt.isoformat(),
-            "cupdateAt": self.cupdateAt.isoformat(),
+            "plannedStartDate": self.format_date(self.plannedStartDate),
+            "plannedEndDate": self.format_date(self.plannedEndDate),
+            "createdAt": self.format_date(self.createdAt),
+            "cupdateAt": self.format_date(self.cupdateAt),
         }
+
+    def format_date(self, date):
+        if isinstance(date, str):
+            return date
+        return date.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z' if date else None
 
 class RouteSchema(Schema):
     id = fields.String()

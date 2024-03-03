@@ -8,7 +8,11 @@ class InvalidDates(ApiError):
 
 class RouteExists(ApiError):
     code = 412
-    description = 'Ya existe una ruta con el mismo id de vuelo'
+    description = 'El usuario ya tiene una publicación para la misma fecha'
+
+class InvalidDateExpire(ApiError):
+    code = 412
+    description = 'La fecha expiración no es válida'
 
 class IncompleteParams(ApiError):
     code = 400

@@ -16,6 +16,6 @@ app.register_blueprint(posts_blueprint)
 def handle_exception(err):
     print("handle_exception")
     response = {
-      "mssg": err.description
+      "msg": err.description
     }
     return jsonify(response), err.code
