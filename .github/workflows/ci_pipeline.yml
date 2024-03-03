@@ -89,7 +89,7 @@ jobs:
         working-directory: ./rf005
         run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
 
-test_score:
+  test_score:
     runs-on: ubuntu-latest
     strategy:
       matrix:
