@@ -1,13 +1,10 @@
-import uuid
+from ..adapters.service_adapter import ServiceAdapter
 from .base_command import BaseCommand
 from ..models.post import Post
 from ..models.route import Route
 from ..errors.errors import IncompleteParams, InvalidDates, RouteExists, InvalidDateExpire
-from flask import request
 from datetime import datetime, timezone
 import os
-import requests
-import json
 
 class Create(BaseCommand):
     def __init__(self, json_data, token, user_id):
@@ -38,14 +35,13 @@ class Create(BaseCommand):
             # Convierte a datetime solo si plannedStartDate es una cadena
             if isinstance(route.plannedStartDate, str):
                 route.plannedStartDate = datetime.strptime(route.plannedStartDate, '%Y-%m-%dT%H:%M:%S.%f%z')
-
             # Convierte a datetime solo si plannedEndDate es una cadena
             if isinstance(route.plannedEndDate, str):
                 route.plannedEndDate = datetime.strptime(route.plannedEndDate, '%Y-%m-%dT%H:%M:%S.%f%z')
 
             # Ahora puedes aplicar isoformat y agregar 'Z'
-            route.plannedStartDate = route.plannedStartDate.isoformat() + 'Z'
-            route.plannedEndDate = route.plannedEndDate.isoformat() + 'Z'
+            route.plannedStartDate = route.plannedStartDate.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+            route.plannedEndDate = route.plannedEndDate.strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
 
         except KeyError as e:
             raise IncompleteParams(f"Campo faltante en la solicitud: {e}")
@@ -53,6 +49,12 @@ class Create(BaseCommand):
         if expire_at < datetime.now(timezone.utc):
             raise InvalidDateExpire()
 
+        print((
+            planned_start_date > datetime.now(timezone.utc)
+            and planned_end_date > datetime.now(timezone.utc)
+            and expire_at > datetime.now(timezone.utc)
+            and expire_at <= planned_start_date
+        ))
         if (
             planned_start_date > datetime.now(timezone.utc)
             and planned_end_date > datetime.now(timezone.utc)
@@ -62,12 +64,17 @@ class Create(BaseCommand):
             route_id = self.validate_route(route.flightId)
             if route_id:
                 
-                response = requests.get(
+                response = ServiceAdapter().resquest(
+                    'get',
                     f'{host}/routes',
-                    headers={
-                    'Authorization': f'{self.token}'
-                    }
+                    {
+                        'Authorization': f'{self.token}'
+                    },
+                    {}
                 )
+                print("/routes 69")
+                print(response.json())
+
                 routes_data = response.json()
                 old_route = next((route for route in routes_data if route['flightId'] == route['flightId']), None)
 
@@ -83,18 +90,19 @@ class Create(BaseCommand):
                     raise RouteExists()
                 
                 else:
-                    
-                    response = requests.post(
+                    response = ServiceAdapter().resquest(
+                        'post',
                         f'{host_post}/posts',
-                        json=post.serialize(), 
-                        headers={
-                            'Authorization': f'{self.token}'
-                        }
+                        {
+                        'Authorization': f'{self.token}'
+                        },
+                        post.serialize()
                     )
+                    print("/routes 94")
+                    print(response.json())
                     new_post = response.json()
                     ##Falta validar la consistencia en caso de alguna falla
             else:
-                print("No existe el trayecto")
                 post = Post(\
                     routeId = route.id , \
                     userId = self.user_id, \
@@ -108,42 +116,36 @@ class Create(BaseCommand):
                 
                 #En caso que no exista el trayecto, se procede a crearlo junto con el post
                 else:
-                    print("Trayecto no existe!!!")
                     #persistir trayecto
-                    print(route.serialize())
-                    response = requests.post(
+                    response = ServiceAdapter().resquest(
+                        'post',
                         f'{host}/routes',
-                        json=route.serialize(), 
-                        headers={
-                            'Authorization': f'{self.token}'
-                        }
+                        {
+                        'Authorization': f'{self.token}'
+                        },
+                        route.serialize()
                     )
 
-                    if response.status_code == 200:
-                        try:
-                            #debo colocar new_post = response.json() 
-                            route = response.json()
-                        except json.JSONDecodeError:
-                            print("La respuesta no contiene datos JSON")
+                    if response.status_code == 201:
+                        new_route = response.json()
+                        route.id = new_route["id"]
                     else:
-                        print(f"Solicitud fallida creando trayecto con código de estado: {response.status_code} mensaje: {response.text}")
+                        raise RouteExists()
 
                     #persistir post
-                    response = requests.post(
+                    response = ServiceAdapter().resquest(
+                        'post',
                         f'{host_post}/posts',
-                        json=post.serialize(), 
-                        headers={
-                            'Authorization': f'{self.token}'
-                        }
+                        {
+                        'Authorization': f'{self.token}'
+                        },
+                        post.serialize()
                     )
+                    print("/posts 138")
+                    print(response.json())
 
                     if response.status_code == 200:
-                        try:
-                            new_post = response.json()
-                        except json.JSONDecodeError:
-                            print("La respuesta no contiene datos JSON")
-                    else:
-                        print(f"Solicitud fallida con código de estado: {response.status_code}")
+                        new_post = response.json()
 
             created_at_post = post.createdAt
 
@@ -203,12 +205,17 @@ class Create(BaseCommand):
     def validate_route(self, flightId):
         
         host = os.environ['ROUTES_PATH'] if 'ROUTES_PATH' in os.environ else 'http://localhost:3002'
-        response = requests.get(
+        response = ServiceAdapter().resquest(
+            'get',
             f'{host}/routes',
-            headers={
-            'Authorization': f'{self.token}'
-            }
+            {
+                'Authorization': f'{self.token}'
+            },
+            {}
         )
+        print("/routes 210")
+        print(response.json())
+
         if response.status_code == 200 and response.json() != []:
             routes_data = response.json()
 
@@ -224,12 +231,16 @@ class Create(BaseCommand):
     def validate_route_id(self, routeId):
 
         host = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
-        response = requests.get(
+        response = ServiceAdapter().resquest(
+            'get',
             f'{host}/posts',
-            headers={
-            'Authorization': f'{self.token}'
-            }
+            {
+                'Authorization': f'{self.token}'
+            },
+            {}
         )
+        print("/posts 236")
+        print(response.json())
 
         if response.status_code == 200:
             posts_data = response.json()

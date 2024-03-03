@@ -72,23 +72,6 @@ jobs:
         working-directory: ./offers
         run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
 
-  test_rf005:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [ 3.10 ]
-    steps:
-      - uses: actions/checkout@v1
-      - name: Install pipenv
-        working-directory: ./rf005
-        run: pip install pipenv
-      - name: Install dependencies
-        working-directory: ./rf005
-        run: pipenv install --dev
-      - name: Run unit tests
-        working-directory: ./rf005
-        run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
-
   test_score:
     runs-on: ubuntu-latest
     strategy:
@@ -104,4 +87,38 @@ jobs:
         run: pipenv install --dev
       - name: Run unit tests
         working-directory: ./score
+        run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
+
+  test_rf003:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.10 ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install pipenv
+        working-directory: ./rf003
+        run: pip install pipenv
+      - name: Install dependencies
+        working-directory: ./rf003
+        run: pipenv install --dev
+      - name: Run unit tests
+        working-directory: ./rf003
+        run: pipenv run pytest --cov=src -v -s --cov-fail-under=70
+
+  test_rf005:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ 3.10 ]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Install pipenv
+        working-directory: ./rf005
+        run: pip install pipenv
+      - name: Install dependencies
+        working-directory: ./rf005
+        run: pipenv install --dev
+      - name: Run unit tests
+        working-directory: ./rf005
         run: pipenv run pytest --cov=src -v -s --cov-fail-under=70

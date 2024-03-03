@@ -14,10 +14,10 @@ class Route:
         self.bagCost = bagCost
 
         # Asegurar que plannedStartDate sea un objeto datetime
-        if plannedStartDate is None or not isinstance(plannedStartDate, datetime):
-            plannedStartDate = datetime.now()
-        if plannedEndDate is None or not isinstance(plannedEndDate, datetime):
-            plannedEndDate = datetime.now()
+        # if plannedStartDate is None or not isinstance(plannedStartDate, datetime):
+        #     plannedStartDate = datetime.now()
+        # if plannedEndDate is None or not isinstance(plannedEndDate, datetime):
+        #     plannedEndDate = datetime.now()
 
         self.plannedStartDate = plannedStartDate
         self.plannedEndDate = plannedEndDate
