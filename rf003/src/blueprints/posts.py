@@ -13,3 +13,8 @@ def create():
     user = Autorizacion(token).execute()
     return make_response(jsonify(Create(request.json, token, user['id']).execute()), 201)
 
+@posts_blueprint.route('/rf003/ping', methods = ['GET'])
+def ping():
+    return 'pong'
+
+

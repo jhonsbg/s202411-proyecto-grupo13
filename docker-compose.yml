@@ -210,6 +210,10 @@ services:
       - "3005:3005"
     environment:
       USERS_PATH: "http://api_user:3000"
+      POSTS_PATH: "http://api_post:3001"
+      ROUTES_PATH: "http://api_route:3002"
+      OFFERS_PATH: "http://api_offer:3003"
+      SCORES_PATH: "http://api_score:3004"
     depends_on:
       posts_db:
         condition: service_healthy
