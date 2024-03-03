@@ -49,12 +49,6 @@ class Create(BaseCommand):
         if expire_at < datetime.now(timezone.utc):
             raise InvalidDateExpire()
 
-        print((
-            planned_start_date > datetime.now(timezone.utc)
-            and planned_end_date > datetime.now(timezone.utc)
-            and expire_at > datetime.now(timezone.utc)
-            and expire_at <= planned_start_date
-        ))
         if (
             planned_start_date > datetime.now(timezone.utc)
             and planned_end_date > datetime.now(timezone.utc)
@@ -72,8 +66,6 @@ class Create(BaseCommand):
                     },
                     {}
                 )
-                print("/routes 69")
-                print(response.json())
 
                 routes_data = response.json()
                 old_route = next((route for route in routes_data if route['flightId'] == route['flightId']), None)
@@ -98,10 +90,10 @@ class Create(BaseCommand):
                         },
                         post.serialize()
                     )
-                    print("/routes 94")
-                    print(response.json())
-                    new_post = response.json()
-                    ##Falta validar la consistencia en caso de alguna falla
+                    
+                    if response.status_code == 201:
+                        new_post = response.json()
+                        post.id = new_post['id']
             else:
                 post = Post(\
                     routeId = route.id , \
@@ -129,6 +121,7 @@ class Create(BaseCommand):
                     if response.status_code == 201:
                         new_route = response.json()
                         route.id = new_route["id"]
+                        post.routeId = new_route["id"] 
                     else:
                         raise RouteExists()
 
@@ -141,11 +134,10 @@ class Create(BaseCommand):
                         },
                         post.serialize()
                     )
-                    print("/posts 138")
-                    print(response.json())
 
-                    if response.status_code == 200:
+                    if response.status_code == 201:
                         new_post = response.json()
+                        post.id = new_post['id']
 
             created_at_post = post.createdAt
 
@@ -197,6 +189,8 @@ class Create(BaseCommand):
                     "msg": "Resumen de la operación *."
                 }
 
+            print('RESPUESTA: ********************')
+            print(new_post)
             return new_post
         
         else:
@@ -213,8 +207,6 @@ class Create(BaseCommand):
             },
             {}
         )
-        print("/routes 210")
-        print(response.json())
 
         if response.status_code == 200 and response.json() != []:
             routes_data = response.json()
@@ -239,8 +231,6 @@ class Create(BaseCommand):
             },
             {}
         )
-        print("/posts 236")
-        print(response.json())
 
         if response.status_code == 200:
             posts_data = response.json()

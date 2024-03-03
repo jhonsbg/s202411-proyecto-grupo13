@@ -4,7 +4,7 @@ import uuid
 
 class Post:
     def __init__(self, routeId, userId, expireAt=None, createdAt=None):
-        self.id = str(uuid.uuid4())
+        self.id = ''
         self.routeId = routeId
         self.userId = userId
         self.expireAt = expireAt or datetime.now()

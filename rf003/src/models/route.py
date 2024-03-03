@@ -5,7 +5,7 @@ import uuid
 class Route:
     def __init__(self, flightId, sourceAirportCode, sourceCountry, destinyAirportCode, destinyCountry, bagCost,
                  plannedStartDate=None, plannedEndDate=None, createdAt=None, cupdateAt=None):
-        self.id = str(uuid.uuid4())
+        self.id = ''
         self.flightId = flightId
         self.sourceAirportCode = sourceAirportCode
         self.sourceCountry = sourceCountry

@@ -7,11 +7,11 @@ offer_schema = OfferSchema()
 
 offers_blueprint = Blueprint('posts', __name__)
 
-@offers_blueprint.route('/rf004/posts/{id}/offers', methods = ['POST'])
-def create():
+@offers_blueprint.route('/rf004/posts/<post_id>/offers', methods = ['POST'])
+def create(post_id):
     token = request.headers.get('Authorization') 
     user = Autorizacion(token).execute()
-    return make_response(jsonify(Create(request.json, token, user['id'], id).execute()), 201)
+    return make_response(jsonify(Create(request.json, token, user['id'], post_id).execute()), 201)
 
 @offers_blueprint.route('/rf004/ping', methods = ['GET'])
 def ping():

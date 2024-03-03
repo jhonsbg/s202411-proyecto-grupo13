@@ -6,13 +6,13 @@ class InvalidDates(ApiError):
     code = 412
     description = 'Las fechas del trayecto no son válidas'
 
-class RouteExists(ApiError):
+class IsUserPost(ApiError):
     code = 412
-    description = 'El usuario ya tiene una publicación para la misma fecha'
+    description = 'La publicación es del mismo usuario y no se puede ofertar por ella.'
 
 class InvalidDateExpire(ApiError):
     code = 412
-    description = 'La fecha expiración no es válida'
+    description = 'La publicación ya está expirada y no se reciben más ofertas por ella.'
 
 class IncompleteParams(ApiError):
     code = 400

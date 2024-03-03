@@ -1,13 +1,9 @@
-import uuid
 from .base_command import BaseCommand
-from ..models.post import Post
 from ..models.offer import Offer
-from ..errors.errors import IncompleteParams, InvalidDates, RouteExists, InvalidDateExpire
-from flask import request
+from ..errors.errors import *
 from datetime import datetime, timezone
 import os
 import requests
-import json
 
 class Create(BaseCommand):
     def __init__(self, json_data, token, user_id, id):
@@ -17,8 +13,8 @@ class Create(BaseCommand):
         self.json_data = json_data
 
     def execute(self):
-        host = os.environ['OFFER_PATH'] if 'OFFER_PATH' in os.environ else 'http://localhost:3003'
-        host_post = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
+        host = os.environ['OFFERS_PATH'] if 'OFFER_PATH' in os.environ else 'http://localhost:3003'
+        # host_post = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
         
         try:
 
@@ -32,12 +28,25 @@ class Create(BaseCommand):
             )
 
         except KeyError as e:
+            print("31")
             raise IncompleteParams(f"Campo faltante en la solicitud: {e}")
 
         #Validar si existe el post
         post_exists = self.validate_post(self.post_id)
 
-        if (post_exists):
+        if (post_exists is not None):
+
+            #validar que el post no es del mismo usuario
+            if post_exists['userId'] == self.user_id:
+               raise IsUserPost()
+
+            if datetime.strptime(str(post_exists['expireAt']), '%Y-%m-%dT%H:%M:%S.%f') < datetime.now():
+                raise InvalidDateExpire()
+
+            #obtener el route
+            route = self.get_route(post_exists['routeId'])
+            print(route)
+            
             #crear la oferta
             reponse = requests.post(
                 f'{host}/offers',
@@ -45,20 +54,51 @@ class Create(BaseCommand):
                     'Authorization': f'{self.token}'
                 },
                 json={
-                    'postid': post_exists['id'],
-                    'userid': offer.userid,
+                    'postId': post_exists['id'],
                     'description': offer.description,
                     'size': offer.size,
                     'fragile': offer.fragile,
                     'offer': offer.offer
                 }
             )
-            new_offer = reponse.json()
+            
+            if reponse.status_code == 201:
+                new_offer = reponse.json()
 
-            return new_offer
+                #calcular el score
+                host_score = os.environ['SCORES_PATH'] if 'SCORES_PATH' in os.environ else 'http://localhost:3004'
+
+                reponse = requests.post(
+                    f'{host_score}/scores',
+                    headers={
+                        'Authorization': f'{self.token}'
+                    },
+                    json={
+                        "userid": self.user_id,
+                        "offerid": new_offer['id'],
+                        "offer": offer.offer,
+                        "size": offer.size,
+                        "bagCost": route['bagCost']
+                    }
+                )
+                if reponse.status_code == 201:
+                    return {
+                        "data": {
+                            "postId": post_exists['id'],
+                            "userId": self.user_id,
+                            "id": new_offer['id'],
+                            "createdAt": new_offer['createdAt'],
+                            "offer": offer.offer
+                        },
+                        "msg": 'resumen de la operacion *.'
+                    }
+                else:
+                    raise ApiError()
+            else:
+                raise ApiError()
         
         else:
-            raise InvalidDates()
+            raise PostNotFoundError()
     
     def validate_post(self, id):
         host_post = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
@@ -68,10 +108,23 @@ class Create(BaseCommand):
             'Authorization': f'{self.token}'
             }
         )
-        post = response.json()
         if response.status_code == 200:
+            post = response.json()
             return post
         else:
             return None
 
-    
+    def get_route(self, id):
+        host = os.environ['ROUTES_PATH'] if 'ROUTES_PATH' in os.environ else 'http://localhost:3002'
+        print(f'{host}/routes/{id}')
+        response = requests.get(
+            f'{host}/routes/{id}',
+            headers={
+            'Authorization': f'{self.token}'
+            }
+        )
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return None
