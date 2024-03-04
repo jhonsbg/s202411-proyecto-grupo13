@@ -35,6 +35,16 @@ spec:
             value: "http://servicio-routes"
           - name: SCORES_PATH
             value: "http://servicio-scores"
+          - name: DB_USER
+            value: "postgres"
+          - name: DB_PASSWORD
+            value: "baggage-db"
+          - name: DB_HOST
+            value: "192.168.0.3"
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_NAME
+            value: "baggage-db"
 ---
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
@@ -61,7 +71,7 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3007
-      nodePort: 31020
+      nodePort: 31023
 ---
 
 ###################################
@@ -127,7 +137,7 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3007
-      nodePort: 31021
+      nodePort: 31024
 ---
 
 ###################################
@@ -193,7 +203,7 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3007
-      nodePort: 31022
+      nodePort: 31025
 
 ---
 ###################################
@@ -259,4 +269,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 3007
-      nodePort: 31023
+      nodePort: 31026

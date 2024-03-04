@@ -30,7 +30,7 @@ spec:
           - name: DB_PASSWORD
             value: "baggage-db"
           - name: DB_HOST
-            value: "192.168.0.10"
+            value: "192.168.0.3"
           - name: DB_PORT
             value: "5432"
           - name: DB_NAME
@@ -96,7 +96,7 @@ spec:
           - name: DB_PASSWORD
             value: "baggage-db"
           - name: DB_HOST
-            value: "192.168.0.10"
+            value: "192.168.0.3"
           - name: DB_PORT
             value: "5432"
           - name: DB_NAME
@@ -164,7 +164,7 @@ spec:
           - name: DB_PASSWORD
             value: "baggage-db"
           - name: DB_HOST
-            value: "192.168.0.10"
+            value: "192.168.0.3"
           - name: DB_PORT
             value: "5432"
           - name: DB_NAME
@@ -233,7 +233,7 @@ spec:
           - name: DB_PASSWORD
             value: "baggage-db"
           - name: DB_HOST
-            value: "192.168.0.10"
+            value: "192.168.0.3"
           - name: DB_PORT
             value: "5432"
           - name: DB_NAME
