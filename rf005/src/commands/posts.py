@@ -88,7 +88,7 @@ class Posts(BaseCommand):
     if self.post_id is None:
       raise BadRequestException()
     
-    host = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://api_post:3001'
+    host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://api_post:3001'
 
     response = ServiceAdapter().resquest(
         'get',
@@ -113,7 +113,7 @@ class Posts(BaseCommand):
     if route_id is None:
       raise NotFoundException()
     
-    host = os.environ['ROUTES_PATH'] if 'ROUTES_PATH' in os.environ else 'http://api_route:3002'
+    host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://api_route:3002'
 
     response = ServiceAdapter().resquest(
       'get',
@@ -138,7 +138,7 @@ class Posts(BaseCommand):
     if self.post_id is None:
       raise BadRequestException()
      
-    host = os.environ['OFFERS_PATH'] if 'OFFERS_PATH' in os.environ else 'http://api_offer:3003'
+    host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://api_offer:3003'
     
     response = ServiceAdapter().resquest(
       'get',
@@ -160,7 +160,7 @@ class Posts(BaseCommand):
       raise ApiError(response.status_code)
     
   def getScores(self, offerIds):
-    host = os.environ['SCORES_PATH'] if 'SCORES_PATH' in os.environ else 'http://api_score:3004'
+    host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://api_score:3004'
 
     response = ServiceAdapter().resquest(
       'get',

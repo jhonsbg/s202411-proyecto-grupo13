@@ -13,7 +13,7 @@ class Create(BaseCommand):
         self.json_data = json_data
 
     def execute(self):
-        host = os.environ['OFFERS_PATH'] if 'OFFER_PATH' in os.environ else 'http://localhost:3003'
+        host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3003'
         # host_post = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
         
         try:
@@ -66,7 +66,7 @@ class Create(BaseCommand):
                 new_offer = reponse.json()
 
                 #calcular el score
-                host_score = os.environ['SCORES_PATH'] if 'SCORES_PATH' in os.environ else 'http://localhost:3004'
+                host_score = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3004'
 
                 reponse = requests.post(
                     f'{host_score}/scores',
@@ -101,7 +101,7 @@ class Create(BaseCommand):
             raise PostNotFoundError()
     
     def validate_post(self, id):
-        host_post = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
+        host_post = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3001'
         response = requests.get(
             f'{host_post}/posts/{id}',
             headers={
@@ -115,7 +115,7 @@ class Create(BaseCommand):
             return None
 
     def get_route(self, id):
-        host = os.environ['ROUTES_PATH'] if 'ROUTES_PATH' in os.environ else 'http://localhost:3002'
+        host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3002'
         print(f'{host}/routes/{id}')
         response = requests.get(
             f'{host}/routes/{id}',

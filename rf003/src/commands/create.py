@@ -13,8 +13,8 @@ class Create(BaseCommand):
         self.json_data = json_data
 
     def execute(self):
-        host = os.environ['ROUTES_PATH'] if 'ROUTES_PATH' in os.environ else 'http://localhost:3002'
-        host_post = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
+        host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3002'
+        host_post = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3001'
         
         try:
             planned_start_date = datetime.strptime(str(self.json_data['plannedStartDate']), '%Y-%m-%dT%H:%M:%S.%f%z')
@@ -198,7 +198,7 @@ class Create(BaseCommand):
     
     def validate_route(self, flightId):
         
-        host = os.environ['ROUTES_PATH'] if 'ROUTES_PATH' in os.environ else 'http://localhost:3002'
+        host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3002'
         response = ServiceAdapter().resquest(
             'get',
             f'{host}/routes',
@@ -222,7 +222,7 @@ class Create(BaseCommand):
 
     def validate_route_id(self, routeId):
 
-        host = os.environ['POSTS_PATH'] if 'POSTS_PATH' in os.environ else 'http://localhost:3001'
+        host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3001'
         response = ServiceAdapter().resquest(
             'get',
             f'{host}/posts',
