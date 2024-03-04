@@ -2,14 +2,15 @@ team:
    name: Proyecto equipo 13
    members:
       - user: ma.munozb1@uniandes.edu.co
-        percentage: 25
+        percentage: 30
       - user: h.maury@uniandes.edu.co
-        percentage: 25
+        percentage: 30
       - user: f.alarconf@uniandes.edu.co
-        percentage: 25
+        percentage: 30
       - user: js.bohorquezg1@uniandes.edu.co
-        percentage: 25
+        percentage: 10
 board: https://github.com/orgs/MISW-4301-Desarrollo-Apps-en-la-Nube/projects/152/views/1
+url: 34.111.106.26
 user-management:
   folder: users
   port: 3000
@@ -30,3 +31,25 @@ route-management:
   port: 3002
   authors:
     - ma.munozb1@uniandes.edu.co
+score-management:
+  folder: score
+  port: 3004
+  authors:
+    - ma.munozb1@uniandes.edu.co
+rf003-management:
+  folder: rf003
+  port: 3005
+  authors:
+    - f.alarconf@uniandes.edu.co
+rf004-management:
+  folder: rf004
+  port: 3006
+  authors:
+    - h.maury@uniandes.edu.co
+    - f.alarconf@uniandes.edu.co
+rf005-management:
+  folder: rf005
+  port: 3007
+  authors:
+    - h.maury@uniandes.edu.co
+    - f.alarconf@uniandes.edu.co

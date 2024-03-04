@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: score
-          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/score:1.0
+          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/scores:1.0
           ports:
             - containerPort: 3004
           # Realizar pull siempre a la imagen
@@ -55,12 +55,12 @@ spec:
     checkIntervalSec: 30
     port: 3004
     type: HTTP
-    requestPath: /score/ping
+    requestPath: /scores/ping
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: servicio-score
+  name: servicio-scores
   annotations:
     cloud.google.com/backend-config: '{"default": "baggage-score-config"}'
 spec:
@@ -70,7 +70,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3007
+      targetPort: 3004
       nodePort: 31023
 ---
 
@@ -136,7 +136,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3007
+      targetPort: 3005
       nodePort: 31024
 ---
 
@@ -202,7 +202,7 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3007
+      targetPort: 3006
       nodePort: 31025
 
 ---

@@ -11,7 +11,7 @@ class Auth(BaseCommand):
         if not self.token:
             raise PermissionDeniedException()
 
-        host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://api_user:3000'
+        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://api_user:3000'
         response = ServiceAdapter().resquest(
             'get',
             f'{host}/users/me',

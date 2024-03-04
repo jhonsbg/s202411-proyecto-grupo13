@@ -12,7 +12,7 @@ class Autorizacion(BaseCommand):
         if not self.token:
             raise NoTokenRequest()
  
-        host = os.environ['INGRESS_PATH'] if 'INGRESS_PATH' in os.environ else 'http://localhost:3000'
+        host = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://localhost:3000'
         response = ServiceAdapter().resquest(
             'get',
             f'{host}/users/me',
