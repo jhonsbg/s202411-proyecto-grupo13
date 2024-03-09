@@ -40,217 +40,256 @@ services:
       timeout: 2s
       retries: 5
 
-# --------------------------ROUTES-------------------------------
-  api_routes:
-    container_name: api_route
-    restart: always
-    build: ./routes
-    ports:
-      - "3002:3002"
-    environment:
-      DB_NAME: route_db
-      DB_HOST: route_db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      USERS_PATH: "http://api_user:3000"
-    depends_on:
-      route_db:
-        condition: service_healthy
-    networks:
-      - route_net
-      - app_net
+# # --------------------------ROUTES-------------------------------
+#   api_routes:
+#     container_name: api_route
+#     restart: always
+#     build: ./routes
+#     ports:
+#       - "3002:3002"
+#     environment:
+#       DB_NAME: route_db
+#       DB_HOST: route_db
+#       DB_PORT: 5432
+#       DB_USER: postgres
+#       DB_PASSWORD: postgres
+#       USERS_PATH: "http://api_user:3000"
+#     depends_on:
+#       route_db:
+#         condition: service_healthy
+#     networks:
+#       - route_net
+#       - app_net
 
-  route_db:
-    container_name: route_db
-    image: postgres:latest
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=route_db
-    networks:
-      - route_net
-    volumes:
-      - ./pgdata-route:/var/lib/postgresql/data/
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 2s
-      timeout: 2s
-      retries: 5
+#   route_db:
+#     container_name: route_db
+#     image: postgres:latest
+#     restart: always
+#     environment:
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=postgres
+#       - POSTGRES_DB=route_db
+#     networks:
+#       - route_net
+#     volumes:
+#       - ./pgdata-route:/var/lib/postgresql/data/
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U postgres"]
+#       interval: 2s
+#       timeout: 2s
+#       retries: 5
 
-# --------------------------OFFERS-------------------------------
-  api_offer:
-    container_name: api_offer
-    image: api_offer
-    restart: always
-    build: ./offers
-    ports:
-      - "3003:3003"
-    volumes:
-      - /usr/src/app
-    environment:
-      DB_NAME: offer_db
-      DB_HOST: offer_db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      USERS_PATH: "http://api_user:3000"
-    depends_on:
-      offer_db:
-        condition: service_healthy
-    networks:
-      - offer_net
-      - app_net
+# # --------------------------OFFERS-------------------------------
+#   api_offer:
+#     container_name: api_offer
+#     image: api_offer
+#     restart: always
+#     build: ./offers
+#     ports:
+#       - "3003:3003"
+#     volumes:
+#       - /usr/src/app
+#     environment:
+#       DB_NAME: offer_db
+#       DB_HOST: offer_db
+#       DB_PORT: 5432
+#       DB_USER: postgres
+#       DB_PASSWORD: postgres
+#       USERS_PATH: "http://api_user:3000"
+#     depends_on:
+#       offer_db:
+#         condition: service_healthy
+#     networks:
+#       - offer_net
+#       - app_net
 
-  offer_db:
-    container_name: offer_db
-    image: postgres:latest
-    restart: always
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=offer_db
-    networks:
-      - offer_net
-    volumes:
-      - ./pgdata-offer:/var/lib/postgresql/data/
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 2s
-      timeout: 2s
-      retries: 5
+#   offer_db:
+#     container_name: offer_db
+#     image: postgres:latest
+#     restart: always
+#     environment:
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=postgres
+#       - POSTGRES_DB=offer_db
+#     networks:
+#       - offer_net
+#     volumes:
+#       - ./pgdata-offer:/var/lib/postgresql/data/
+#       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U postgres"]
+#       interval: 2s
+#       timeout: 2s
+#       retries: 5
 
-# --------------------------POSTS-------------------------------
-  posts:
-    container_name: api_post
-    image: api_posts
-    build: ./posts
-    ports:
-      - "3001:3001"
-    environment:
-      DB_NAME: monitor_posts
-      DB_HOST: posts_db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      USERS_PATH: "http://api_user:3000"
-    depends_on:
-      posts_db:
-        condition: service_healthy
-    networks:
-      - app_net
-      - post_net
+# # --------------------------POSTS-------------------------------
+#   posts:
+#     container_name: api_post
+#     image: api_posts
+#     build: ./posts
+#     ports:
+#       - "3001:3001"
+#     environment:
+#       DB_NAME: monitor_posts
+#       DB_HOST: posts_db
+#       DB_PORT: 5432
+#       DB_USER: postgres
+#       DB_PASSWORD: postgres
+#       USERS_PATH: "http://api_user:3000"
+#     depends_on:
+#       posts_db:
+#         condition: service_healthy
+#     networks:
+#       - app_net
+#       - post_net
   
-  posts_db:
-    container_name: posts_db
-    image: postgres
-    environment:
-      POSTGRES_DB: monitor_posts
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 2s
-      timeout: 2s
-      retries: 5
-    networks:
-      - post_net
-    volumes:
-      - ./pgdata-post:/var/lib/postgresql/data/
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+#   posts_db:
+#     container_name: posts_db
+#     image: postgres
+#     environment:
+#       POSTGRES_DB: monitor_posts
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U postgres"]
+#       interval: 2s
+#       timeout: 2s
+#       retries: 5
+#     networks:
+#       - post_net
+#     volumes:
+#       - ./pgdata-post:/var/lib/postgresql/data/
+#       - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
 
-# --------------------------SCORES-------------------------------
-  api_scores:
-    container_name: api_score
-    restart: always
-    build: ./score
-    ports:
-      - "3004:3004"
-    environment:
-      DB_NAME: score_db
-      DB_HOST: score_db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      USERS_PATH: "http://api_user:3000"
-    depends_on:
-      score_db:
-        condition: service_healthy
-    networks:
-      - score_net
-      - app_net
+# # --------------------------SCORES-------------------------------
+#   api_scores:
+#     container_name: api_score
+#     restart: always
+#     build: ./score
+#     ports:
+#       - "3004:3004"
+#     environment:
+#       DB_NAME: score_db
+#       DB_HOST: score_db
+#       DB_PORT: 5432
+#       DB_USER: postgres
+#       DB_PASSWORD: postgres
+#       USERS_PATH: "http://api_user:3000"
+#     depends_on:
+#       score_db:
+#         condition: service_healthy
+#     networks:
+#       - score_net
+#       - app_net
 
-  score_db:
-    container_name: score_db
+#   score_db:
+#     container_name: score_db
+#     image: postgres:latest
+#     restart: always
+#     environment:
+#       - POSTGRES_USER=postgres
+#       - POSTGRES_PASSWORD=postgres
+#       - POSTGRES_DB=score_db
+#     networks:
+#       - score_net
+#     volumes:
+#       - ./pgdata-score:/var/lib/postgresql/data/
+#     healthcheck:
+#       test: ["CMD-SHELL", "pg_isready -U postgres"]
+#       interval: 2s
+#       timeout: 2s
+#       retries: 5
+
+# # -------------------------- RF-003 -------------------------------
+#   api_rf003:
+#     container_name: api_rf003
+#     image: api_rf003
+#     build: ./rf003
+#     ports:
+#       - "3005:3005"
+#     environment:
+#       USERS_PATH: "http://api_user:3000"
+#       POSTS_PATH: "http://api_post:3001"
+#       ROUTES_PATH: "http://api_route:3002"
+#       OFFERS_PATH: "http://api_offer:3003"
+#       SCORES_PATH: "http://api_score:3004"
+#     depends_on:
+#       posts_db:
+#         condition: service_healthy
+#       route_db:
+#         condition: service_healthy
+#     networks:
+#       - app_net
+
+# # --------------------------RF-004-------------------------------
+#   api_rf004:
+#     container_name: api_rf004
+#     restart: always
+#     build: ./rf004
+#     ports:
+#       - "3006:3006"
+#     environment:
+#       USERS_PATH: "http://api_user:3000"
+#       POSTS_PATH: "http://api_post:3001"
+#       OFFERS_PATH: "http://api_offer:3003"
+#       SCORES_PATH: "http://api_score:3004"
+#     networks:
+#       - app_net
+
+# # --------------------------RF-005-------------------------------
+#   api_rf005:
+#     container_name: api_rf005
+#     restart: always
+#     build: ./rf005
+#     ports:
+#       - "3007:3007"
+#     environment:
+#       USERS_PATH: "http://api_user:3000"
+#       POSTS_PATH: "http://api_post:3001"
+#       ROUTES_PATH: "http://api_route:3002"
+#       OFFERS_PATH: "http://api_offer:3003"
+#       SCORES_PATH: "http://api_score:3004"
+#     networks:
+#       - app_net
+
+# # --------------------------CARDS-------------------------------
+#   api_cards:
+#     container_name: api_card
+#     restart: always
+#     build: ./card
+#     ports:
+#       - "3008:3008"
+#     environment:
+#       DB_NAME: card_db
+#       DB_HOST: card_db
+#       DB_PORT: 5432
+#       DB_USER: postgres
+#       DB_PASSWORD: postgres
+#       USERS_PATH: "http://api_user:3000"
+#     depends_on:
+#       card_db:
+#         condition: service_healthy
+#     networks:
+#       - card_net
+#       - app_net
+
+  card_db:
+    container_name: card_db
     image: postgres:latest
     restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=score_db
+      - POSTGRES_DB=card_db
     networks:
-      - score_net
+      - card_net
     volumes:
-      - ./pgdata-score:/var/lib/postgresql/data/
+      - ./pgdata-card:/var/lib/postgresql/data/
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
       timeout: 2s
       retries: 5
-
-# -------------------------- RF-003 -------------------------------
-  api_rf003:
-    container_name: api_rf003
-    image: api_rf003
-    build: ./rf003
-    ports:
-      - "3005:3005"
-    environment:
-      USERS_PATH: "http://api_user:3000"
-      POSTS_PATH: "http://api_post:3001"
-      ROUTES_PATH: "http://api_route:3002"
-      OFFERS_PATH: "http://api_offer:3003"
-      SCORES_PATH: "http://api_score:3004"
-    depends_on:
-      posts_db:
-        condition: service_healthy
-      route_db:
-        condition: service_healthy
-    networks:
-      - app_net
-
-# --------------------------RF-004-------------------------------
-  api_rf004:
-    container_name: api_rf004
-    restart: always
-    build: ./rf004
-    ports:
-      - "3006:3006"
-    environment:
-      USERS_PATH: "http://api_user:3000"
-      POSTS_PATH: "http://api_post:3001"
-      OFFERS_PATH: "http://api_offer:3003"
-      SCORES_PATH: "http://api_score:3004"
-    networks:
-      - app_net
-
-# --------------------------RF-005-------------------------------
-  api_rf005:
-    container_name: api_rf005
-    restart: always
-    build: ./rf005
-    ports:
-      - "3007:3007"
-    environment:
-      USERS_PATH: "http://api_user:3000"
-      POSTS_PATH: "http://api_post:3001"
-      ROUTES_PATH: "http://api_route:3002"
-      OFFERS_PATH: "http://api_offer:3003"
-      SCORES_PATH: "http://api_score:3004"
-    networks:
-      - app_net
 
 # --------------------------NETWORKS-------------------------------
 networks:
@@ -258,11 +297,14 @@ networks:
     driver: bridge
   user_net:
     driver: bridge
-  post_net:
+  # post_net:
+  #   driver: bridge
+  # route_net:
+  #   driver: bridge
+  # offer_net:
+  #   driver: bridge
+  # score_net:
+  #   driver: bridge
+  card_net:
     driver: bridge
-  route_net:
-    driver: bridge
-  offer_net:
-    driver: bridge
-  score_net:
-    driver: bridge
+
