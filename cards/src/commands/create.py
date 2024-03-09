@@ -13,12 +13,12 @@ class Create(BaseCommand):
         try:
             card = Card( \
                 id = str(uuid.uuid4()), \
-                title = self.json_data["title"], \
-                description = self.json_data["description"], \
-                price = self.json_data["price"], \
-                location = self.json_data["location"], \
-                delivery = self.json_data["delivery"], \
-                userid = token.replace("Bearer ", "") \
+                token = self.json_data['token'], \
+                userid = self.json_data['userId'], \
+                lastFourDigits = self.json_data['lastFourDigits'], \
+                ruv = self.json_data['ruv'], \
+                issuer = self.json_data['issuer'], \
+                status = self.json_data['status']                
             )
                          
         except: 
