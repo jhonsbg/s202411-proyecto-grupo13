@@ -12,9 +12,9 @@ cards_blueprint = Blueprint('cards', __name__)
 @cards_blueprint.route('/credit-cards', methods = ['POST'])
 def create():
     token = request.headers.get('Authorization') 
-    code = Autorizacion(token).execute()
+    user = Autorizacion(token).execute()
     #if  code == 200:
-    return make_response(jsonify(Create(request.json).execute()), 201)
+    return make_response(jsonify(Create(request.json, token, user['id']).execute()), 201)
     #else:
     #    return make_response(jsonify({"error": "Unauthorized"}), code)
 

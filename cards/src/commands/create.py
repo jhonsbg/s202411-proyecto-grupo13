@@ -5,16 +5,17 @@ from ..errors.errors import BadRequestException
 from flask import request
 
 class Create(BaseCommand):
-    def __init__(self, json_data):
+    def __init__(self, json_data, token, user_id):
         self.json_data = json_data
+        self.token = token
+        self.user_id = user_id
 
     def execute(self):
-        token = request.headers.get('Authorization')
         try:
             card = Card( \
                 id = str(uuid.uuid4()), \
-                token = self.json_data['token'], \
-                userid = self.json_data['userId'], \
+                token = self.token, \
+                userid = self.user_id, \
                 lastFourDigits = self.json_data['lastFourDigits'], \
                 ruv = self.json_data['ruv'], \
                 issuer = self.json_data['issuer'], \
