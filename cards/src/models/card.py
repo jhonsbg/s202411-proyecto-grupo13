@@ -7,7 +7,7 @@ import enum
 class IssuerEnum(enum.Enum):
     VISA = 'Visa'
     MASTERCARD = 'Mastercard'
-    AMERICANEXPRESS = 'American Express'
+    AMERICANEXPRESS = 'AMERICAN EXPRESS'
     DISCOVER = 'Discover'
     DINERSCLUB = 'Diners Club'
     UNKNOWN = 'Unknown'
@@ -24,7 +24,7 @@ class Card(db.Model):
     token = db.Column(db.String(256), nullable=False)
     userid = db.Column(db.String(40))
     lastFourDigits = db.Column(db.String(4))
-    ruv = db.Column(db.String(40))
+    ruv = db.Column(db.String(256))
     issuer = db.Column(Enum(IssuerEnum), nullable=False)
     status = db.Column(Enum(StatusEnum), nullable=False)
     createat = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), nullable=False)
