@@ -5,6 +5,8 @@ from ..commands import Create
 from ..commands import Edit
 from ..commands import Me
 from ..commands import Auth
+from ..commands import Env
+from ..commands import Valida
 
 import os
 
@@ -19,6 +21,16 @@ def create():
 @users_blueprint.route('/users/<string:id_user>', methods = ['PATCH'])
 def edit(id_user):
     Edit(id_user, request.json).execute()
+
+    response = {
+        "msg": "el usuario ha sido actualizado"
+    }
+
+    return make_response(jsonify(response), 200)
+
+@users_blueprint.route('/users', methods = ['PATCH'])
+def patch():
+    Valida(request.json).execute()
 
     response = {
         "msg": "el usuario ha sido actualizado"
@@ -43,3 +55,8 @@ def auth():
 def reset():
     Reset().execute()
     return 'Todos los datos fueron eliminados'
+
+@users_blueprint.route('/native/env', methods = ['POST'])
+def nativeenv():
+    response = Env(request.json).execute()
+    return response
