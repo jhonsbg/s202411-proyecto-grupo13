@@ -1,6 +1,12 @@
-from ..errors.errors import BadRequestException, NotFoundException
+from ..errors.errors import BadRequestException, NotFoundException, AuthenticationException
 from .base_command import BaseCommannd
 from ..models import db, User
+import enum
+
+class StatusEnum(enum.Enum):
+    POR_VERIFICAR = 'Por verificar'
+    NO_VERIFICADO = 'No verificado'
+    VERIFICADO = 'Verificado'
 
 class Auth(BaseCommannd):
   def __init__(self, json_data):
@@ -18,9 +24,13 @@ class Auth(BaseCommannd):
       raise NotFoundException()
     
     user = User.query.filter_by(username=username).first()
-    
-    return {
-        "id": user.id,
-        "token": user.id,
-        "expireAt": "2024-03-20T14:28:23.382748"
-    }
+    status = f"{StatusEnum.VERIFICADO}"
+    status2 = f"{user.status}"
+    if status == status2:
+      return {
+          "id": user.id,
+          "token": user.id,
+          "expireAt": "2024-03-20T14:28:23.382748"
+      }
+    else:
+      raise AuthenticationException
