@@ -2,12 +2,16 @@ import uuid
 from ..errors.errors import PreconditionFailedException, BadRequestException
 from .base_command import BaseCommannd
 from ..models import db, User, StatusEnum
+from ..commands import Native
+import requests
+import os
 
 class Create(BaseCommannd):
   def __init__(self, json_data):
     self.json_data = json_data
   
   def execute(self):
+    native = Native(self.json_data).execute()
     try:
       user = User( \
           id = str(uuid.uuid4()), \
@@ -40,4 +44,5 @@ class Create(BaseCommannd):
         "id": user.id,
         "createdAt": created_at.isoformat()
     }
+    
     return new_user
