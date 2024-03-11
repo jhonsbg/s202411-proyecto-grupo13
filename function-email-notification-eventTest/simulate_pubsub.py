@@ -1,7 +1,7 @@
 import base64
 import json
 
-from notify.main import pubsub_trigger
+# from ..function-email-notification.main import pubsub_trigger
 
 
 # Datos que quieres simular que son enviados en tu mensaje de Pub/Sub
@@ -22,4 +22,4 @@ event = {
 # Contexto simulado (puedes dejarlo vacío o simular valores según necesites)
 context = {}
 
-pubsub_trigger(event, context)
+# pubsub_trigger(event, context)
