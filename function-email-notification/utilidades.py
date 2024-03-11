@@ -1,11 +1,15 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+import os
 import smtplib
 
 
 def send_email(to, subject, body):
-    sender = "grupo13.nubeuniandes@gmail.com"
-    password = "jzed jiux mhfm wfsg"
+    sender = os.environ.get('SENDER', '')
+    password = os.environ.get('PASSWORD', )
+
+    print(sender)
+    print(password)
 
     msg = MIMEMultipart()
     msg["From"] = sender
