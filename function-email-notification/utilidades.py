@@ -8,9 +8,6 @@ def send_email(to, subject, body):
     sender = os.environ.get('SENDER', '')
     password = os.environ.get('PASSWORD', )
 
-    print(sender)
-    print(password)
-
     msg = MIMEMultipart()
     msg["From"] = sender
     msg["To"] = to
