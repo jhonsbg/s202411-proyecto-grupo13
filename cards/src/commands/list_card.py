@@ -5,25 +5,26 @@ from ..errors.errors import BadRequestException
 from enum import Enum
 
 class ListCard(BaseCommand):
-    def __init__(self):
-        pass
+    def __init__(self, token, user_id):
+        self.token = token
+        self.user_id = user_id
 
     def execute(self):
-        token = request.headers.get('Authorization')
+        if self.user_id is None:
+            error_message = 'El usuario no tiene tarjetas asociadas.'
+            response = make_response(jsonify(error_message), 400)
+            return response
         
+        cards = Card.query.filter_by(userid=self.user_id).all()
         try:
-            owner = request.args.get("owner",default="")
-            
-            if owner == 'me':
-                user_id = token.replace("Bearer ", "")
-                cards = Card.query.filter_by(userid=user_id).all()
+            if cards is not None and len(cards) > 0:
                 serialized_cards = []
                 for card in cards:
                     serialized_card = {
                         "id": str(card.id),
+                        "token": card.token,
                         "userId": card.userid,
                         "lastFourDigits": card.lastFourDigits,
-                        "ruv": card.ruv,
                         "issuer": card.issuer,
                         "status": card.status,
                         "createdAt": card.createat.isoformat(),

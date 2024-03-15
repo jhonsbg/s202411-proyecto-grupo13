@@ -9,7 +9,9 @@ import os
 
 app = Flask(__name__)
 
-if os.environ.get('TESTING') is not None and bool(os.environ.get('TESTING')): 
+if os.environ.get('TESTING') is not None and os.environ.get('TESTING')=='True': 
+  print(bool(os.environ.get('TESTING')))
+  print(os.environ.get('TESTING'))
   basedir = os.path.abspath(os.path.dirname(__file__))
   app.config['SQLALCHEMY_DATABASE_URI'] =\
       'sqlite:///' + os.path.join(basedir, 'test_database.db')

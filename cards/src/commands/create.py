@@ -3,22 +3,21 @@ from .base_command import BaseCommand
 from ..models.card import Card, db
 from ..errors.errors import BadRequestException, InvalidSecretToken, NotFoundSecretToken, ExistentRequestCard, ExpiredCard
 from flask import request, jsonify
-from google.cloud import pubsub_v1
+# from google.cloud import pubsub_v1
 from datetime import datetime
 import os
 import json
 import requests
 
 # Se leen las variables de entorno especificadas
-projec_id = os.environ.get('PROJECT_ID', '')
-card_topic = os.environ.get('CARDS_TOPIC', '')
-email_topic = os.environ.get('EMAIL_TOPIC', '')
+# projec_id = os.environ.get('PROJECT_ID', '')
+# card_topic = os.environ.get('CARDS_TOPIC', '')
+# email_topic = os.environ.get('EMAIL_TOPIC', '')
 
 # Instancia del cliente de comunicación  Pub/Sub
-publisher = pubsub_v1.PublisherClient()
+# publisher = pubsub_v1.PublisherClient()
 
 class Create(BaseCommand):
-    #def __init__(self, json_data, token, user_id):
     def __init__(self, json_data, token, user_id):
         self.json_data = json_data
         self.token = token
@@ -27,6 +26,7 @@ class Create(BaseCommand):
     def execute(self):
         host_native = os.environ['TRUENATIVE_PATH'] if 'TRUENATIVE_PATH' in os.environ else 'http://localhost:3010'
         secret_token = os.environ['SECRET_TOKEN']
+        print(secret_token)
         #si la fecha de la tarjeta ya está vencida
         if 'expirationDate' in self.json_data and datetime.now() > datetime.strptime(self.json_data['expirationDate'], "%y/%m"):
             raise ExpiredCard() 
@@ -47,7 +47,6 @@ class Create(BaseCommand):
                     },
                     "transactionIdentifier": str(uuid.uuid4())
                 }
-            
             )
         except:
             raise BadRequestException()
@@ -97,18 +96,18 @@ class Create(BaseCommand):
         
     
 
-    def send_message(topic, body):
-        topic_path = publisher.topic_path(projec_id, topic)
-        message_json = json.dumps({
-            'data': jsonify(body),
-        })
-        message_bytes = message_json.encode('utf-8')
-        try:
-            publish_future = publisher.publish(topic_path, data=message_bytes)
-            publish_future.result() 
-        except Exception as e:
-            print('Error al momento de publicar')
-            print(e)
+    # def send_message(topic, body):
+    #     topic_path = publisher.topic_path(projec_id, topic)
+    #     message_json = json.dumps({
+    #         'data': jsonify(body),
+    #     })
+    #     message_bytes = message_json.encode('utf-8')
+    #     try:
+    #         publish_future = publisher.publish(topic_path, data=message_bytes)
+    #         publish_future.result() 
+    #     except Exception as e:
+    #         print('Error al momento de publicar')
+    #         print(e)
 
 # # Ejemplos
         

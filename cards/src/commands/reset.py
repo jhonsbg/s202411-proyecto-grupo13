@@ -6,7 +6,7 @@ class Reset(BaseCommand):
   def execute(self):
     cards = Card.query.all()
     for card in cards:
-        db.session.delete(card)
+      db.session.delete(card)
     db.session.commit()
     msg = {
             "msg": "Todos los datos fueron eliminados"

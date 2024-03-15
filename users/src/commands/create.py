@@ -11,7 +11,7 @@ class Create(BaseCommannd):
     self.json_data = json_data
   
   def execute(self):
-    native = Native(self.json_data).execute()
+    # native = Native(self.json_data).execute()
     try:
       user = User( \
           id = str(uuid.uuid4()), \
