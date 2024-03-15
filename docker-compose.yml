@@ -15,8 +15,8 @@ services:
       - DB_PORT=5432
       - DB_NAME=user_db
       - SECRET_TOKEN=qwerty
-      - NATIVE_PATH=http://192.168.18.94
-      - USERS_PATH=http://192.168.18.94
+      - NATIVE_PATH=http://192.168.20.22:3010
+      - USERS_PATH=http://192.168.20.22:3000
     depends_on:
       user_db:
         condition: service_healthy

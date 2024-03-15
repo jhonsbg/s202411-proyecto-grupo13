@@ -26,7 +26,6 @@ class Create(BaseCommand):
     def execute(self):
         host_native = os.environ['TRUENATIVE_PATH'] if 'TRUENATIVE_PATH' in os.environ else 'http://localhost:3010'
         secret_token = os.environ['SECRET_TOKEN']
-        print(secret_token)
         #si la fecha de la tarjeta ya está vencida
         if 'expirationDate' in self.json_data and datetime.now() > datetime.strptime(self.json_data['expirationDate'], "%y/%m"):
             raise ExpiredCard() 
@@ -64,22 +63,31 @@ class Create(BaseCommand):
 
 
         if response_truenative['task_status'] == "ACCEPTED":
+            # validar si la tarjeta ya existe
+            card_exist = Card.query.filter_by(lastFourDigits=self.json_data['cardNumber'][-4:], userId=self.user_id).first()
+            if card_exist:
+                print(22)
+                raise ExistentRequestCard()
+            
             try:
+                print(10)
                 card = Card(
                     id = str(uuid.uuid4()), \
                     lastFourDigits = self.json_data['cardNumber'][-4:], \
                     issuer = response_truenative['issuer'], \
                     token = response_truenative['token'], \
-                    status=StatusEnum.POR_VERIFICAR, \
+                    status='POR_VERIFICAR', \
                     ruv = response_truenative['RUV'], \
                     userId = self.user_id
                 )
+                
+                print(11)
                 db.session.add(card)
                 db.session.commit()
             except: 
                 raise BadRequestException()
 
-            created_at = card.createAt
+            created_at = card.createdAt
 
             if isinstance(created_at, tuple):
                 created_at = created_at[0]

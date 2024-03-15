@@ -20,17 +20,18 @@ class ListCard(BaseCommand):
         cards = Card.query.filter_by(userId=self.user_id).all()
         try:
             if cards is not None and len(cards) > 0:
+                # for card in cards:
+                #     card.status = card.status
+                #     print(card.status.value)
                 response = make_response(jsonify([card_schema.dump(card) for card in cards]), 200)
                 return response
             
             else:
-                print(41)
                 error_message = 'El usuario no tiene tarjetas asociadas.'
                 response = make_response(jsonify(error_message), 400)
                 return response
                             
         except KeyError as e:
-            print(47)
             print(f"KeyError: {e}")
             error_message = 'En el caso que alguno de los campos no esté presente en la solicitud, o no tengan el formato esperado.'
             response = make_response(jsonify(error_message), 400)
