@@ -27,7 +27,7 @@ class Native(BaseCommannd):
       "userIdentifier": self.json_data["dni"],
       "userWebhook": webhook
     }
-    host = os.environ['NATIVE_PATH'] if 'NATIVE_PATH' in os.environ else 'http://192.168.0.11:3010'
+    host = os.environ['NATIVE_PATH'] if 'NATIVE_PATH' in os.environ else 'http://localhost:3010'
     token = os.environ['SECRET_TOKEN'] if 'SECRET_TOKEN' in os.environ else 'qwerty'
     try:
       response = requests.post(

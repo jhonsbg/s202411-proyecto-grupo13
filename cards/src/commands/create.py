@@ -1,6 +1,6 @@
 import uuid
 from .base_command import BaseCommand
-from ..models.card import Card, db
+from ..models.card import Card, db, StatusEnum
 from ..errors.errors import BadRequestException, InvalidSecretToken, NotFoundSecretToken, ExistentRequestCard, ExpiredCard
 from flask import request, jsonify
 # from google.cloud import pubsub_v1
@@ -70,23 +70,23 @@ class Create(BaseCommand):
                     lastFourDigits = self.json_data['cardNumber'][-4:], \
                     issuer = response_truenative['issuer'], \
                     token = response_truenative['token'], \
-                    status="APROBADA", \
+                    status=StatusEnum.POR_VERIFICAR, \
                     ruv = response_truenative['RUV'], \
-                    userid = self.user_id
+                    userId = self.user_id
                 )
                 db.session.add(card)
                 db.session.commit()
             except: 
                 raise BadRequestException()
 
-            created_at = card.createat
+            created_at = card.createAt
 
             if isinstance(created_at, tuple):
                 created_at = created_at[0]
 
             new_card = {
                 "id": card.id,
-                "userId": card.userid,
+                "userId": card.userId,
                 "createdAt": created_at.isoformat()
             }
 

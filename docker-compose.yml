@@ -14,6 +14,9 @@ services:
       - DB_HOST=user_db
       - DB_PORT=5432
       - DB_NAME=user_db
+      - SECRET_TOKEN=qwerty
+      - NATIVE_PATH=http://192.168.18.94
+      - USERS_PATH=http://192.168.18.94
     depends_on:
       user_db:
         condition: service_healthy
@@ -253,25 +256,25 @@ services:
 #       - app_net
 
 # --------------------------CARDS-------------------------------
-  api_cards:
-    container_name: api_card
-    restart: always
-    build: ./cards
-    ports:
-      - "3008:3008"
-    environment:
-      DB_NAME: card_db
-      DB_HOST: card_db
-      DB_PORT: 5432
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      USERS_PATH: "http://api_user:3000"
-    depends_on:
-      card_db:
-        condition: service_healthy
-    networks:
-      - card_net
-      - app_net
+  # api_cards:
+  #   container_name: api_card
+  #   restart: always
+  #   build: ./cards
+  #   ports:
+  #     - "3008:3008"
+  #   environment:
+  #     DB_NAME: card_db
+  #     DB_HOST: card_db
+  #     DB_PORT: 5432
+  #     DB_USER: postgres
+  #     DB_PASSWORD: postgres
+  #     USERS_PATH: "http://api_user:3000"
+  #   depends_on:
+  #     card_db:
+  #       condition: service_healthy
+  #   networks:
+  #     - card_net
+  #     - app_net
 
   card_db:
     container_name: card_db
@@ -283,6 +286,8 @@ services:
       - POSTGRES_DB=card_db
     networks:
       - card_net
+    ports:
+      - "5432:5432"
     volumes:
       - ./pgdata-card:/var/lib/postgresql/data/
     healthcheck:

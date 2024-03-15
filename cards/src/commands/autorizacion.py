@@ -11,7 +11,7 @@ class Autorizacion(BaseCommand):
         if not self.token:
             raise AuthenticationException()
         
-        if os.environ.get('TESTING') is not None and bool(os.environ.get('TESTING')): 
+        if os.environ.get('TESTING') is not None and os.environ.get('TESTING') =='True': 
             if self.token is None:
                 raise AuthenticationException()
                 
@@ -30,7 +30,7 @@ class Autorizacion(BaseCommand):
             }
         )
         if response.status_code == 200:
-            return response.json
+            return response.json()
         elif response.status_code == 401:
             raise Unauthorized()
         else: 
