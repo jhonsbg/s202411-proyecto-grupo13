@@ -24,6 +24,10 @@ class Auth(BaseCommannd):
       raise NotFoundException()
     
     user = User.query.filter_by(username=username).first()
+
+    if user is None: 
+      raise NotFoundException()
+    
     status = f"{StatusEnum.VERIFICADO}"
     status2 = f"{user.status}"
     if status == status2:

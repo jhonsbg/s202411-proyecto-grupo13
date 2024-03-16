@@ -31,6 +31,7 @@ pgdata-route/
 pgdata-user/
 pgdata-score/
 pgdata-rf003/
+pgdata-card/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template

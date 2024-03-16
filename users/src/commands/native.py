@@ -11,7 +11,7 @@ class Native(BaseCommannd):
     self.json_data = json_data
   
   def execute(self):
-    webhook = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://192.168.1.28:3001'
+    webhook = os.environ['USERS_PATH'] if 'USERS_PATH' in os.environ else 'http://localhost:3000'
     webhook = webhook + '/users'
     letraTran = ''.join(random.choices(string.ascii_letters + string.digits, k=3))
     numTran = int(datetime.datetime.utcnow().timestamp())
@@ -38,6 +38,7 @@ class Native(BaseCommannd):
           json=verification_data
       )
     except: 
+       print('No ingresó al servicio de truenative')
        raise NotFoundException
     
     if response.status_code == 201:
