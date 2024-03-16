@@ -1,21 +1,43 @@
 import uuid
 from .base_command import BaseCommand
-from ..models.card import Card, db, StatusEnum
+from ..models.card import Card, db
 from ..errors.errors import BadRequestException, InvalidSecretToken, NotFoundSecretToken, ExistentRequestCard, ExpiredCard
 from flask import request, jsonify
-# from google.cloud import pubsub_v1
+from google.cloud import pubsub_v1
 from datetime import datetime
 import os
 import json
 import requests
 
 # Se leen las variables de entorno especificadas
-# projec_id = os.environ.get('PROJECT_ID', '')
-# card_topic = os.environ.get('CARDS_TOPIC', '')
-# email_topic = os.environ.get('EMAIL_TOPIC', '')
+projec_id = os.environ.get('PROJECT_ID', '')
+card_topic = os.environ.get('CARDS_TOPIC', '')
+email_topic = os.environ.get('EMAIL_TOPIC', '')
 
 # Instancia del cliente de comunicación  Pub/Sub
-# publisher = pubsub_v1.PublisherClient()
+publisher = pubsub_v1.PublisherClient()
+
+
+def send_message(topic, body):
+    topic_path = publisher.topic_path(projec_id, topic)
+    message_json = json.dumps({
+        'data': jsonify(body),
+    })
+    message_bytes = message_json.encode('utf-8')
+    try:
+        publish_future = publisher.publish(topic_path, data=message_bytes)
+        publish_future.result() 
+    except Exception as e:
+        print('Error al momento de publicar')
+        print(e)
+
+# # Ejemplos
+        
+# send_message(email_topic, {
+#     'to': 'hmaury1@gmail.com',
+#     'subject': 'Prueba',
+#     'body': 'Hola mundo'
+# })
 
 class Create(BaseCommand):
     def __init__(self, json_data, token, user_id):
@@ -66,11 +88,9 @@ class Create(BaseCommand):
             # validar si la tarjeta ya existe
             card_exist = Card.query.filter_by(lastFourDigits=self.json_data['cardNumber'][-4:], userId=self.user_id).first()
             if card_exist:
-                print(22)
                 raise ExistentRequestCard()
             
             try:
-                print(10)
                 card = Card(
                     id = str(uuid.uuid4()), \
                     lastFourDigits = self.json_data['cardNumber'][-4:], \
@@ -80,8 +100,6 @@ class Create(BaseCommand):
                     ruv = response_truenative['RUV'], \
                     userId = self.user_id
                 )
-                
-                print(11)
                 db.session.add(card)
                 db.session.commit()
             except: 
@@ -98,31 +116,12 @@ class Create(BaseCommand):
                 "createdAt": created_at.isoformat()
             }
 
+            print('sending...')
+            print(card.ruv)
+            send_message(card_topic, {
+                "RUV": card.ruv
+            })
+
             return new_card
         else:
             return response_truenative
-        
-    
-
-    # def send_message(topic, body):
-    #     topic_path = publisher.topic_path(projec_id, topic)
-    #     message_json = json.dumps({
-    #         'data': jsonify(body),
-    #     })
-    #     message_bytes = message_json.encode('utf-8')
-    #     try:
-    #         publish_future = publisher.publish(topic_path, data=message_bytes)
-    #         publish_future.result() 
-    #     except Exception as e:
-    #         print('Error al momento de publicar')
-    #         print(e)
-
-# # Ejemplos
-        
-# send_message(email_topic, {
-#     'to': 'hmaury1@gmail.com',
-#     'subject': 'Prueba',
-#     'body': 'Hola mundo'
-# })
-
-# send_message(card_topic, Card)

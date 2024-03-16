@@ -3,7 +3,6 @@ from . import db
 from marshmallow import fields
 from sqlalchemy import Enum, Column, DateTime, func
 import enum
-from marshmallow_enum import EnumField
 
 class IssuerEnum(enum.Enum):
     VISA = 'Visa'
@@ -47,7 +46,7 @@ class CardSchema(SQLAlchemyAutoSchema):
     lastFourDigits = fields.String(required=True)
     ruv = fields.String(required=True)
     issuer = fields.String(required=True)
-    status = EnumField(StatusEnum, by_value=True)
+    status = fields.Enum(StatusEnum, by_value=True)
     createdAt = fields.DateTime(dump_only=True)
     updatedAt = fields.DateTime(dump_only=True)
     __mapper_args__ = {
