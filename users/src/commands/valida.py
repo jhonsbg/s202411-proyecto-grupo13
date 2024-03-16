@@ -4,6 +4,16 @@ from ..models import db, User
 import hashlib
 import os
 from datetime import datetime, timezone, timedelta
+from google.cloud import pubsub_v1
+import json
+from flask import jsonify
+
+# Se leen las variables de entorno especificadas
+projec_id = os.environ.get('PROJECT_ID', '')
+email_topic = os.environ.get('EMAIL_TOPIC', '')
+
+# Instancia del cliente de comunicación  Pub/Sub
+publisher = pubsub_v1.PublisherClient()
 
 class Valida(BaseCommannd):
   def __init__(self, json_data):
@@ -27,6 +37,27 @@ class Valida(BaseCommannd):
       existing_user.status = self.json_data["status"]
       existing_user.updateAt = fupdate
       db.session.commit()
+      send_message(email_topic, {
+          'to': existing_user.email,
+          'subject': f'Verificación de usuario {existing_user.fullName} ',
+          'body': f'La verificación de su solicitud de verificación del usuario {existing_user.fullName} se encuentra en estado {existing_user.status}'
+      })
       return True
     else:
       raise BadRequestException()
+    
+  
+
+def send_message(topic, body):
+    topic_path = publisher.topic_path(projec_id, topic)
+    message_json = json.dumps({
+        'data': jsonify(body),
+    })
+    message_bytes = message_json.encode('utf-8')
+    try:
+        publish_future = publisher.publish(topic_path, data=message_bytes)
+        publish_future.result() 
+    except Exception as e:
+        print('Error al momento de publicar')
+        print(e)
+
