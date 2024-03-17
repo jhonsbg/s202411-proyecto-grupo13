@@ -14,7 +14,11 @@ def verifier(event, context):
         Respuesta en caso de exito
     """
     json_data = json.loads(base64.b64decode(event['data']).decode())
-    card_ruv = json_data['data']['RUV']
+    data = json.loads(json_data['data'])
+    card_ruv = data['RUV']
+    
+    print(json_data)
+    print(card_ruv)
 
     host = os.environ['INGRESS_PATH']
     secret_token = os.environ['SECRET_TOKEN']
@@ -30,7 +34,7 @@ def verifier(event, context):
         response_json = response.json()
         response = requests.patch(
             f'http://{host}/credit-cards',
-            data=response_json
+            json=response_json
             # {
             #     "RUV": "cXdlcnR5MTIzNDU2MzplYWUyNGI5NTM5MWFhODQyYmYwYTIxODUzYTIzNThiMjJiMWQ3ZTdlMDIzZmY0ODkyNTZjNGE2MmM3NTZiZjU4",
             #     "createdAt": "Sun, 10 Mar 2024 22:56:20 GMT",
@@ -38,6 +42,7 @@ def verifier(event, context):
             #     "transactionIdentifier": "qwerty1234563"
             # }
         )
-        return 'OK'
+        return card_ruv
     else:
+        print(card_ruv)
         raise RuntimeError()

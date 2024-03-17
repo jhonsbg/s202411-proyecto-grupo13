@@ -32,7 +32,4 @@ def reset():
 
 @cards_blueprint.route('/credit-cards/', methods = ['PATCH'])
 def update():
-    token = request.headers.get('Authorization') 
-    user = Autorizacion(token).execute()
-    print(user['email'])
-    return make_response(jsonify(Update(request.json, token, user['email']).execute()), 201)
+    return make_response(jsonify(Update(request.json).execute()), 200)

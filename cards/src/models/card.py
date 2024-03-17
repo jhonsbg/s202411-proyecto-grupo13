@@ -12,7 +12,7 @@ class IssuerEnum(enum.Enum):
     DINERSCLUB = 'Diners Club'
     UNKNOWN = 'Unknown'
 
-class StatusEnum(enum.Enum):
+class StatusCardEnum(enum.Enum):
     POR_VERIFICAR = 'POR_VERIFICAR'
     RECHAZADA = 'RECHAZADA'
     APROBADA = 'APROBADA'
@@ -26,7 +26,7 @@ class Card(db.Model):
     lastFourDigits = db.Column(db.String(4))
     ruv = db.Column(db.String(256))
     issuer = db.Column(Enum(IssuerEnum), nullable=False)
-    status = db.Column(Enum(StatusEnum), nullable=False)
+    status = db.Column(Enum(StatusCardEnum), nullable=False)
     createdAt = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), nullable=False)
     updatedAt = Column(DateTime(timezone=True), server_default=func.now(), default=func.now(), onupdate=func.now(), nullable=False)
     
@@ -46,7 +46,7 @@ class CardSchema(SQLAlchemyAutoSchema):
     lastFourDigits = fields.String(required=True)
     ruv = fields.String(required=True)
     issuer = fields.String(required=True)
-    status = fields.Enum(StatusEnum, by_value=True)
+    status = fields.Enum(StatusCardEnum, by_value=True)
     createdAt = fields.DateTime(dump_only=True)
     updatedAt = fields.DateTime(dump_only=True)
     __mapper_args__ = {

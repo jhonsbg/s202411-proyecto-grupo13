@@ -2,27 +2,27 @@ version: "3.8"
 
 services:
 # --------------------------USERS-------------------------------
-  # api_user:
-  #   container_name: api_user
-  #   restart: always
-  #   build: ./users
-  #   ports:
-  #     - "3010:3010"
-  #   environment:
-  #     - DB_USER=postgres
-  #     - DB_PASSWORD=postgres
-  #     - DB_HOST=user_db
-  #     - DB_PORT=5432
-  #     - DB_NAME=user_db
-  #     - SECRET_TOKEN=qwerty
-  #     - NATIVE_PATH=http://192.168.20.22:3010
-  #     - USERS_PATH=http://192.168.20.22:3010
-  #   depends_on:
-  #     user_db:
-  #       condition: service_healthy
-  #   networks:
-  #     - user_net
-  #     - app_net
+  api_user:
+    container_name: api_user
+    restart: always
+    build: ./users
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=user_db
+      - DB_PORT=5432
+      - DB_NAME=user_db
+      - SECRET_TOKEN=qwerty
+      - NATIVE_PATH=http://192.168.18.94
+      - USERS_PATH=http://192.168.18.94
+    depends_on:
+      user_db:
+        condition: service_healthy
+    networks:
+      - user_net
+      - app_net
 
   user_db:
     container_name: user_db

@@ -1,5 +1,6 @@
+from .autorizacion import Autorizacion
 from .base_command import BaseCommand
-from ..models.card import Card
+from ..models.card import db, Card, StatusCardEnum
 from ..errors.errors import NotFoundSecretToken
 from flask import jsonify
 from google.cloud import pubsub_v1
@@ -15,7 +16,6 @@ email_topic = os.environ.get('EMAIL_TOPIC', '')
 
 # Instancia del cliente de comunicación  Pub/Sub
 publisher = pubsub_v1.PublisherClient()
-
 
 def send_message(topic, body):
     topic_path = publisher.topic_path(projec_id, topic)
@@ -39,36 +39,34 @@ def send_message(topic, body):
 # })
 
 class Update(BaseCommand):
-    def __init__(self, json_data, token, user_email):
+    def __init__(self, json_data):
         self.json_data = json_data
-        self.token = token
-        self.user_email = user_email
 
     def execute(self):
-        host = os.environ['INGRESS_PATH']
+        print(self.json_data['RUV'])
         card = Card.query.filter_by(ruv=self.json_data['RUV']).first()
         
         if card is None:
             raise NotFoundSecretToken()
         
-        try:
-            response = requests.patch(
-                f'http://{host}/credit-cards',
-                data={
-                    "RUV": self.json_data['RUV'],
-                    "updatedAt": datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT"),
-                    "status": "APROBADA"
-                }
-            )
+        user = Autorizacion(f'Bearer {card.userId}').execute()
+        if user is None:
+            raise NotFoundSecretToken()
+        
+        card.updatedAt = datetime.now().strftime("%a, %d %b %Y %H:%M:%S GMT")
+        card.status = self.json_data['status']
 
-            send_message(email_topic, {
-                'to': self.user_email,
-                'subject': 'Tarjeta aprobada',
-                'body': f'Tarjeta {self.json_data["RUV"]} aprobada'
-            })
-        except Exception as e:
-            print(e)
-            raise e
+        print(card.status)
+        db.session.commit()
+
+        send_message(email_topic, {
+            'to': user.email,
+            'subject': f'Verificación de tarjeta de {user.fullName}',
+            'body': f'La solicitud de verificación de la tarjeta {card.lastFourDigits} se encuentra en estado {card.status}'
+        })
+
+        print('enviado')
+        
         
         
 

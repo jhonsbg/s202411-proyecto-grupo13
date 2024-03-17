@@ -2,7 +2,6 @@ import uuid
 from .base_command import BaseCommand
 from ..models.card import Card, db
 from ..errors.errors import BadRequestException, InvalidSecretToken, NotFoundSecretToken, ExistentRequestCard, ExpiredCard
-from flask import jsonify
 from google.cloud import pubsub_v1
 from datetime import datetime
 import os
@@ -21,7 +20,7 @@ publisher = pubsub_v1.PublisherClient()
 def send_message(topic, body):
     topic_path = publisher.topic_path(projec_id, topic)
     message_json = json.dumps({
-        'data': jsonify(body),
+        'data': json.dumps(body),
     })
     message_bytes = message_json.encode('utf-8')
     try:
@@ -30,14 +29,6 @@ def send_message(topic, body):
     except Exception as e:
         print('Error al momento de publicar')
         print(e)
-
-# # Ejemplos
-        
-# send_message(email_topic, {
-#     'to': 'hmaury1@gmail.com',
-#     'subject': 'Prueba',
-#     'body': 'Hola mundo'
-# })
 
 class Create(BaseCommand):
     def __init__(self, json_data, token, user_id):
