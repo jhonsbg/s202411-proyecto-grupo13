@@ -11,8 +11,8 @@ gcloud init
 sudo chmod 666 /var/run/docker.sock 
 
 # imagenes
-sudo docker build -t us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:1.0 ./users/.
-docker push us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:1.0
+sudo docker build -t us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:2.0 ./users/.
+docker push us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:2.0
 
 sudo docker build -t us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/offers:1.0 ./offers/.
 docker push us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/offers:1.0
@@ -76,3 +76,16 @@ ip addr show | grep 'inet '
 # Pub Sub local: 
 
 gcloud projects add-iam-policy-binding proyectogrupo3 --member="user:hmaury1@gmail.com" --role=roles/pubsub.admin
+
+
+# Pub Sub + k8
+
+kubectl create namespace namespace-baggage-cluster
+
+kubectl create serviceaccount service-account-baggage -n default
+
+gcloud iam service-accounts create service-account-baggage --project=proyectogrupo3
+
+gcloud projects add-iam-policy-binding proyectogrupo3  --member=serviceAccount:service-account-baggage@proyectogrupo3.iam.gserviceaccount.com  --role=roles/pubsub.editor  
+gcloud projects add-iam-policy-binding proyectogrupo3  --member=serviceAccount:service-account-baggage@proyectogrupo3.iam.gserviceaccount.com  --role=roles/iam.workloadIdentityUser   
+gcloud projects add-iam-policy-binding proyectogrupo3  --member=serviceAccount:service-account-baggage@proyectogrupo3.iam.gserviceaccount.com  --role=roles/pubsub.admin   

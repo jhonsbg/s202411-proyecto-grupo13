@@ -8,9 +8,9 @@ from sqlalchemy.sql import text
 import enum
 
 class StatusEnum(enum.Enum):
-    POR_VERIFICAR = 'Por verificar'
-    NO_VERIFICADO = 'No verificado'
-    VERIFICADO = 'Verificado'
+    POR_VERIFICAR = 'POR_VERIFICAR'
+    NO_VERIFICADO = 'NO_VERIFICADO'
+    VERIFICADO = 'VERIFICADO'
 
 
 class User(db.Model):

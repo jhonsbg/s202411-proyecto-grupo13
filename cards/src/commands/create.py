@@ -2,7 +2,7 @@ import uuid
 from .base_command import BaseCommand
 from ..models.card import Card, db
 from ..errors.errors import BadRequestException, InvalidSecretToken, NotFoundSecretToken, ExistentRequestCard, ExpiredCard
-from flask import request, jsonify
+from flask import jsonify
 from google.cloud import pubsub_v1
 from datetime import datetime
 import os

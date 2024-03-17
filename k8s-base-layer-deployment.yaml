@@ -1,6 +1,18 @@
+
+###################################
+# SERVICE ACCOUNT
+###################################
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    iam.gke.io/gcp-service-account: service-account-baggage@proyectogrupo3.iam.gserviceaccount.com
+  name: service-account-baggage
+  namespace: default
 ###################################
 # USERS
 ###################################
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -17,11 +29,13 @@ spec:
       labels:
         app: users
     spec:
+      # serviceAccountName: service-account-baggage
+      # automountServiceAccountToken: false
       containers:
         - name: users
-          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:1.0
+          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:2.0
           ports:
-            - containerPort: 3000
+            - containerPort: 3010
           # Realizar pull siempre a la imagen
           imagePullPolicy: Always
           env:
@@ -35,6 +49,16 @@ spec:
             value: "5432"
           - name: DB_NAME
             value: "baggage-db"
+          - name: SECRET_TOKEN
+            value: "qwerty"
+          - name: NATIVE_PATH
+            value: "http://service-truenative"
+          - name: USERS_PATH
+            value: "http://servicio-users"
+          - name: PROJECT_ID
+            value: "proyectogrupo3"
+          - name: EMAIL_TOPIC
+            value: "send-email"
 ---
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
@@ -43,7 +67,7 @@ metadata:
 spec:
   healthCheck:
     checkIntervalSec: 30
-    port: 3000
+    port: 3010
     type: HTTP
     requestPath: /users/ping
 ---
@@ -60,210 +84,271 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3000
+      targetPort: 3010
       nodePort: 31019
 
 ###################################
 # OFFERS
 ###################################
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: offers
-  labels:
-    app: offers
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: offers
-  template:
-    metadata:
-      labels:
-        app: offers
-    spec:
-      containers:
-        - name: offers
-          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/offers:1.0
-          ports:
-            - containerPort: 3003
-          # Realizar pull siempre a la imagen
-          imagePullPolicy: Always
-          env:
-          - name: DB_USER
-            value: "postgres"
-          - name: DB_PASSWORD
-            value: "baggage-db"
-          - name: DB_HOST
-            value: "192.168.0.3"
-          - name: DB_PORT
-            value: "5432"
-          - name: DB_NAME
-            value: "baggage-db"
-          - name: USERS_PATH
-            value: "http://servicio-users"
----
-apiVersion: cloud.google.com/v1
-kind: BackendConfig
-metadata:
-  name: baggage-offers-config
-spec:
-  healthCheck:
-    checkIntervalSec: 30
-    port: 3003
-    type: HTTP
-    requestPath: /offers/ping
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: servicio-offers
-  annotations:
-    cloud.google.com/backend-config: '{"default": "baggage-offers-config"}'
-spec:
-  type: NodePort
-  selector:
-    app: offers
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3003
-      nodePort: 31020
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: offers
+#   labels:
+#     app: offers
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: offers
+#   template:
+#     metadata:
+#       labels:
+#         app: offers
+#     spec:
+#       containers:
+#         - name: offers
+#           image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/offers:1.0
+#           ports:
+#             - containerPort: 3003
+#           # Realizar pull siempre a la imagen
+#           imagePullPolicy: Always
+#           env:
+#           - name: DB_USER
+#             value: "postgres"
+#           - name: DB_PASSWORD
+#             value: "baggage-db"
+#           - name: DB_HOST
+#             value: "192.168.0.3"
+#           - name: DB_PORT
+#             value: "5432"
+#           - name: DB_NAME
+#             value: "baggage-db"
+#           - name: USERS_PATH
+#             value: "http://servicio-users"
+# ---
+# apiVersion: cloud.google.com/v1
+# kind: BackendConfig
+# metadata:
+#   name: baggage-offers-config
+# spec:
+#   healthCheck:
+#     checkIntervalSec: 30
+#     port: 3003
+#     type: HTTP
+#     requestPath: /offers/ping
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: servicio-offers
+#   annotations:
+#     cloud.google.com/backend-config: '{"default": "baggage-offers-config"}'
+# spec:
+#   type: NodePort
+#   selector:
+#     app: offers
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 3003
+#       nodePort: 31020
 
 ###################################
 # ROUTES
 ###################################
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: routes
-  labels:
-    app: routes
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: routes
-  template:
-    metadata:
-      labels:
-        app: routes
-    spec:
-      containers:
-        - name: routes
-          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/routes:1.0
-          ports:
-            - containerPort: 3002
-          # Realizar pull siempre a la imagen
-          imagePullPolicy: Always
-          env:
-          - name: DB_USER
-            value: "postgres"
-          - name: DB_PASSWORD
-            value: "baggage-db"
-          - name: DB_HOST
-            value: "192.168.0.3"
-          - name: DB_PORT
-            value: "5432"
-          - name: DB_NAME
-            value: "baggage-db"
-          - name: USERS_PATH
-            value: "http://servicio-users"
----
-apiVersion: cloud.google.com/v1
-kind: BackendConfig
-metadata:
-  name: baggage-routes-config
-spec:
-  healthCheck:
-    checkIntervalSec: 30
-    port: 3002
-    type: HTTP
-    requestPath: /routes/ping
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: servicio-routes
-  annotations:
-    cloud.google.com/backend-config: '{"default": "baggage-routes-config"}'
-spec:
-  type: NodePort
-  selector:
-    app: routes
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 3002
-      nodePort: 31021
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: routes
+#   labels:
+#     app: routes
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: routes
+#   template:
+#     metadata:
+#       labels:
+#         app: routes
+#     spec:
+#       containers:
+#         - name: routes
+#           image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/routes:1.0
+#           ports:
+#             - containerPort: 3002
+#           # Realizar pull siempre a la imagen
+#           imagePullPolicy: Always
+#           env:
+#           - name: DB_USER
+#             value: "postgres"
+#           - name: DB_PASSWORD
+#             value: "baggage-db"
+#           - name: DB_HOST
+#             value: "192.168.0.3"
+#           - name: DB_PORT
+#             value: "5432"
+#           - name: DB_NAME
+#             value: "baggage-db"
+#           - name: USERS_PATH
+#             value: "http://servicio-users"
+# ---
+# apiVersion: cloud.google.com/v1
+# kind: BackendConfig
+# metadata:
+#   name: baggage-routes-config
+# spec:
+#   healthCheck:
+#     checkIntervalSec: 30
+#     port: 3002
+#     type: HTTP
+#     requestPath: /routes/ping
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: servicio-routes
+#   annotations:
+#     cloud.google.com/backend-config: '{"default": "baggage-routes-config"}'
+# spec:
+#   type: NodePort
+#   selector:
+#     app: routes
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 3002
+#       nodePort: 31021
 
 
 ###################################
 # POSTS
 ###################################
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: posts
+#   labels:
+#     app: posts
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: posts
+#   template:
+#     metadata:
+#       labels:
+#         app: posts
+#     spec:
+#       containers:
+#         - name: posts
+#           image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/posts:1.0
+#           ports:
+#             - containerPort: 3001
+#           # Realizar pull siempre a la imagen
+#           imagePullPolicy: Always
+#           env:
+#           - name: DB_USER
+#             value: "postgres"
+#           - name: DB_PASSWORD
+#             value: "baggage-db"
+#           - name: DB_HOST
+#             value: "192.168.0.3"
+#           - name: DB_PORT
+#             value: "5432"
+#           - name: DB_NAME
+#             value: "baggage-db"
+#           - name: USERS_PATH
+#             value: "http://servicio-users"
+# ---
+# apiVersion: cloud.google.com/v1
+# kind: BackendConfig
+# metadata:
+#   name: baggage-posts-config
+# spec:
+#   healthCheck:
+#     checkIntervalSec: 30
+#     port: 3001
+#     type: HTTP
+#     requestPath: /posts/ping
+# ---
+# kind: Service
+# apiVersion: v1
+# metadata:
+#   name: servicio-posts
+#   annotations:
+#     cloud.google.com/backend-config: '{"default": "baggage-posts-config"}'
+# spec:
+#   type: NodePort
+#   selector:
+#     app: posts
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 3001
+#       nodePort: 31022
+
+###################################
+# NATIVE
+###################################
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: posts
+  name: truenative
   labels:
-    app: posts
+    app: truenative
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: posts
+      app: truenative
   template:
     metadata:
       labels:
-        app: posts
+        app: truenative
     spec:
+      # serviceAccountName: service-account-baggage
+      # automountServiceAccountToken: false
       containers:
-        - name: posts
-          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/posts:1.0
+        - name: truenative
+          image: ghcr.io/misw-4301-desarrollo-apps-en-la-nube/true-native:2.0.0
           ports:
-            - containerPort: 3001
-          # Realizar pull siempre a la imagen
+            - containerPort: 3000
           imagePullPolicy: Always
           env:
-          - name: DB_USER
-            value: "postgres"
-          - name: DB_PASSWORD
-            value: "baggage-db"
-          - name: DB_HOST
-            value: "192.168.0.3"
-          - name: DB_PORT
-            value: "5432"
-          - name: DB_NAME
-            value: "baggage-db"
-          - name: USERS_PATH
-            value: "http://servicio-users"
+            - name: "SECRET_TOKEN"
+              value: qwerty
+
 ---
 apiVersion: cloud.google.com/v1
 kind: BackendConfig
 metadata:
-  name: baggage-posts-config
+  name: truenative-config
 spec:
   healthCheck:
     checkIntervalSec: 30
-    port: 3001
+    port: 3000
     type: HTTP
-    requestPath: /posts/ping
+    requestPath: /native/ping
+
 ---
 kind: Service
 apiVersion: v1
 metadata:
-  name: servicio-posts
+  name: service-truenative
   annotations:
-    cloud.google.com/backend-config: '{"default": "baggage-posts-config"}'
+    cloud.google.com/backend-config: '{"default": "truenative-config"}'
 spec:
   type: NodePort
   selector:
-    app: posts
+    app: truenative
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3001
-      nodePort: 31022
+      targetPort: 3000
+      nodePort: 31018
