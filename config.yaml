@@ -10,7 +10,7 @@ team:
       - user: js.bohorquezg1@uniandes.edu.co
         percentage: 25
 board: https://github.com/orgs/MISW-4301-Desarrollo-Apps-en-la-Nube/projects/152/views/1
-url: 34.111.106.26
+url: 34.128.166.237
 user-management:
   folder: users
   port: 3000
@@ -53,3 +53,16 @@ rf005-management:
   authors:
     - h.maury@uniandes.edu.co
     - f.alarconf@uniandes.edu.co
+credit-cards:
+  folder: cards
+  port: 3008
+  authors:
+    - f.alarconf@uniandes.edu.co
+function-email-notification:
+  folder: function-email-notification
+  authors:
+    - js.bohorquezg1@uniandes.edu.co
+function-cards-verifier:
+  folder: function-cards-verifier
+  authors:
+    - h.maury@uniandes.edu.co

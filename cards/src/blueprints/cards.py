@@ -4,6 +4,7 @@ from ..models import CardSchema
 from ..commands.create import Create
 from ..commands.list_card import ListCard
 from ..commands.reset import Reset
+from ..commands.update import Update
 
 card_schema = CardSchema()
 
@@ -13,7 +14,6 @@ cards_blueprint = Blueprint('cards', __name__)
 def create():
     token = request.headers.get('Authorization') 
     user = Autorizacion(token).execute()
-    print(user)
     return make_response(jsonify(Create(request.json, token, user['id']).execute()), 201)
 
 @cards_blueprint.route('/credit-cards', methods = ['GET'])
@@ -29,3 +29,7 @@ def ping():
 @cards_blueprint.route('/credit-cards/reset', methods = ['POST'])
 def reset():
     return Reset().execute()
+
+@cards_blueprint.route('/credit-cards/', methods = ['PATCH'])
+def update():
+    return make_response(jsonify(Update(request.json).execute()), 200)

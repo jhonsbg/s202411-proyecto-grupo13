@@ -20,6 +20,13 @@ spec:
             name: servicio-users
             port: 
               number: 80
+      - pathType: Prefix
+        path: /credit-cards
+        backend:
+          service:
+            name: servicio-cards
+            port: 
+              number: 80
       # - pathType: Prefix
       #   path: /offers
       #   backend:

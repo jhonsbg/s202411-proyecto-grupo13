@@ -88,6 +88,86 @@ spec:
       nodePort: 31019
 
 ###################################
+# CARDS
+###################################
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cards
+  labels:
+    app: cards
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cards
+  template:
+    metadata:
+      labels:
+        app: cards
+    spec:
+      # serviceAccountName: service-account-baggage
+      # automountServiceAccountToken: false
+      containers:
+        - name: cards
+          image: us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/cards:3.0
+          ports:
+            - containerPort: 3008
+          # Realizar pull siempre a la imagen
+          imagePullPolicy: Always
+          env:
+          - name: DB_USER
+            value: "postgres"
+          - name: DB_PASSWORD
+            value: "baggage-db"
+          - name: DB_HOST
+            value: "192.168.0.3"
+          - name: DB_PORT
+            value: "5432"
+          - name: DB_NAME
+            value: "baggage-db"
+          - name: SECRET_TOKEN
+            value: "qwerty"
+          - name: TRUENATIVE_PATH
+            value: "http://service-truenative"
+          - name: USERS_PATH
+            value: "http://servicio-users"
+          - name: PROJECT_ID
+            value: "proyectogrupo3"
+          - name: EMAIL_TOPIC
+            value: "send-email"
+          - name: CARDS_TOPIC
+            value: "card-verification"
+---
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: baggage-cards-config
+spec:
+  healthCheck:
+    checkIntervalSec: 30
+    port: 3008
+    type: HTTP
+    requestPath: /credit-cards/ping
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: servicio-cards
+  annotations:
+    cloud.google.com/backend-config: '{"default": "baggage-cards-config"}'
+spec:
+  type: NodePort
+  selector:
+    app: cards
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3008
+      nodePort: 31029
+
+###################################
 # OFFERS
 ###################################
 # ---

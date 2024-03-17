@@ -11,6 +11,9 @@ gcloud init
 sudo chmod 666 /var/run/docker.sock 
 
 # imagenes
+sudo docker build -t us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/cards:3.0 ./cards/.
+docker push us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/cards:3.0
+
 sudo docker build -t us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:2.0 ./users/.
 docker push us-central1-docker.pkg.dev/proyectogrupo3/repository-baggage/users:2.0
 
@@ -65,9 +68,9 @@ gcloud pubsub topics create send-email --message-retention-duration=1h
 
 gcloud functions deploy funcion-test-endpoint --entry-point enviar_mensaje --runtime python39 --trigger-http --allow-unauthenticated --memory 128MB --region us-central1 --timeout 60 --min-instances 0 --max-instances 1 --set-env-vars TOPIC=card-verification,PROJECT_ID=proyectogrupo3
 
-gcloud functions deploy funcion-pubsub-card-verifier --entry-point verifier --runtime python39 --trigger-topic card-verification --retry --allow-unauthenticated --memory 128MB --region us-central1 --timeout 60 --min-instances 0 --max-instances 1 --set-env-vars INGRESS_PATH=34.111.106.26,SECRET_TOKEN=qwerty
+gcloud functions deploy funcion-pubsub-card-verifier --entry-point verifier --runtime python39 --trigger-topic card-verification --retry --allow-unauthenticated --memory 128MB --region us-central1 --timeout 60 --min-instances 0 --max-instances 1 --set-env-vars INGRESS_PATH=34.128.166.237,SECRET_TOKEN=qwerty
 
-gcloud functions deploy funcion-pubsub-send-email --entry-point send --runtime python39 --trigger-topic send-email --allow-unauthenticated --memory 128MB --region us-central1 --timeout 60 --min-instances 0 --max-instances 1 --set-env-vars INGRESS_PATH=34.111.106.26,SECRET_TOKEN=qwerty
+gcloud functions deploy funcion-pubsub-send-email --entry-point send --runtime python39 --trigger-topic send-email --allow-unauthenticated --memory 128MB --region us-central1 --timeout 60 --min-instances 0 --max-instances 1 --set-env-vars INGRESS_PATH=34.128.166.237,SECRET_TOKEN=qwerty
 
 
 # IP red local: 
