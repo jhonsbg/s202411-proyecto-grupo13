@@ -20,45 +20,52 @@ spec:
             name: servicio-users
             port: 
               number: 80
+      # - pathType: Prefix
+      #   path: /offers
+      #   backend:
+      #     service:
+      #       name: servicio-offers
+      #       port: 
+      #         number: 80
+      # - pathType: Prefix
+      #   path: /routes
+      #   backend:
+      #     service:
+      #       name: servicio-routes
+      #       port: 
+      #         number: 80
+      # - pathType: Prefix
+      #   path: /posts
+      #   backend:
+      #     service:
+      #       name: servicio-posts
+      #       port: 
+      #         number: 80
+      # - pathType: Prefix
+      #   path: /rf003
+      #   backend:
+      #     service:
+      #       name: servicio-rf003
+      #       port: 
+      #         number: 80
+      # - pathType: Prefix
+      #   path: /rf004
+      #   backend:
+      #     service:
+      #       name: servicio-rf004
+      #       port: 
+      #         number: 80
+      # - pathType: Prefix
+      #   path: /rf005
+      #   backend:
+      #     service:
+      #       name: servicio-rf005
+      #       port: 
+      #         number: 80
       - pathType: Prefix
-        path: /offers
+        path: /native
         backend:
           service:
-            name: servicio-offers
-            port: 
-              number: 80
-      - pathType: Prefix
-        path: /routes
-        backend:
-          service:
-            name: servicio-routes
-            port: 
-              number: 80
-      - pathType: Prefix
-        path: /posts
-        backend:
-          service:
-            name: servicio-posts
-            port: 
-              number: 80
-      - pathType: Prefix
-        path: /rf003
-        backend:
-          service:
-            name: servicio-rf003
-            port: 
-              number: 80
-      - pathType: Prefix
-        path: /rf004
-        backend:
-          service:
-            name: servicio-rf004
-            port: 
-              number: 80
-      - pathType: Prefix
-        path: /rf005
-        backend:
-          service:
-            name: servicio-rf005
+            name: service-truenative
             port: 
               number: 80
